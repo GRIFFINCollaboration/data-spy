@@ -110,6 +110,60 @@ GRIFFINparser = function(){
         unpacked['typeIIIhead']    = (word & 0x80000000) >>> 31;
         unpacked['masterFilterID'] = (word & 0x7FFFFFFF) >>> 0;
 
+    }.bind(this);
+
+    this.parsers[4] = function(word, unpacked){
+        //parse a type IV word
+        //<word>: number; 32 bits corresponding to a type IV word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeIVPacketType'] = (word & 0xF0000000) >>> 28;
+        unpacked['channelTriggerID'] = (word & 0x0FFFFFFF) >>> 0;
+    }.bind(this);
+
+    this.parsers[5] = function(word, unpacked){
+        //parse a type V word
+        //<word>: number; 32 bits corresponding to a type V word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeVPacketType']  = (word & 0xF0000000) >>> 28;
+        unpacked['timestampLowBits'] = (word & 0x0FFFFFFF) >>> 0;
+    }.bind(this);
+
+    this.parsers[6] = function(word, unpacked){
+        //parse a type VI word
+        //<word>: number; 32 bits corresponding to a type VI word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeVIPacketType']  = (word & 0xF0000000) >>> 28;
+        unpacked['deadtime']          = (word & 0x0FFFC000) >>> 14;
+        unpacked['timestampHighBits'] = (word & 0x00003FFF) >>> 0;
+
+        //decode results
+        //deadtime
+        unpacked['deadtime'] = unpacked['deadtime']*10 + ' ns';
+
+    }.bind(this);
+
+    ///////////////////////
+    // post-processing
+    ///////////////////////
+
+    this.reconstructTimestamp = function(unpacked){
+        //<unpacked>: object; a key-value store for holding the unpacked results
+        //recombine the timestamp from info in words V and VI
+
+        unpacked.timestamp = (unpacked.timestampHighBits * Math.pow(2, 28)) + unpacked.timestampLowBits; //yes, adding - ok since bitshift, gets around JS sigining.
     }
 
 }
+
+
+
+
+
+
+

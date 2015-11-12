@@ -22,7 +22,10 @@
                     data = [
                         0x88B67C80,
                         0x00850F81,
-                        0x56007C84
+                        0x56007C84,
+                        0x900461FF,
+                        0xA074A998,
+                        0xB074A998
                     ];
                 },
 
@@ -64,35 +67,33 @@
 
             }); 
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
+            QUnit.test("typeIV", function( assert ){
+                unpacked = {};
+                parser.parsers[4](data[3], unpacked);
 
-            // }); 
+                assert.equal(unpacked.typeIVPacketType, 9, 'type IV packet type is always 9.');
+                assert.equal(unpacked.channelTriggerID, 287231);
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
+            }); 
 
-            // }); 
+            QUnit.test("typeV", function( assert ){
+                unpacked = {};
+                parser.parsers[5](data[4], unpacked);
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
+                assert.equal(unpacked.typeVPacketType, 0xA, 'type V packet type is always 0xA.');
+                assert.equal(unpacked.timestampLowBits, 7645592);
 
-            // }); 
+            }); 
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
+            QUnit.test("typeVI", function( assert ){
+                unpacked = {};
+                parser.parsers[6](data[5], unpacked);
 
-            // }); 
+                assert.equal(unpacked.typeVIPacketType, 0xB, 'type VI packet type is always 0xB.');
+                assert.equal(unpacked.deadtime, '4660 ns', '0xB074A998 corresponds to a deadtime of 466 ns.');
+                assert.equal(unpacked.timestampHighBits, 10648);                
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
-
-            // }); 
+            }); 
 
             // QUnit.test("typeII", function( assert ){
             //     unpacked = {};
@@ -124,7 +125,28 @@
 
             // }); 
 
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
 
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+
+            QUnit.test("post-processing", function ( assert ){
+                    unpacked = {};
+                    parser.parsers[5](data[4], unpacked);
+                    parser.parsers[6](data[5], unpacked);
+
+                    parser.reconstructTimestamp(unpacked)
+
+                    assert.equal(unpacked.timestamp, 2858308381080)
+            });
 
         </script>
       </body>

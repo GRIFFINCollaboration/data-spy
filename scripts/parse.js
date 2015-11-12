@@ -2,7 +2,9 @@
 
 GRIFFINparser = function(){
 
-    this.parsers = []
+    ////////////////////
+    // member data
+    ////////////////////
 
     //index corresponds to unpacked data type number
     this.dataType = [
@@ -33,6 +35,11 @@ GRIFFINparser = function(){
         'Undefined Detector'
     ]
 
+    //////////////////////////////
+    // core parser functions
+    //////////////////////////////
+
+    this.parsers = []
     this.parsers[1] = function(word, unpacked){
         //parse a type I word
         //<word>: number; 32 bits corresponding to a type I word
@@ -67,7 +74,31 @@ GRIFFINparser = function(){
         else
             unpacked['detType'] = 'Invalid detector code, found ' + unpacked['detType'];
 
+    }.bind(this);
 
-    }.bind(this)
+    this.parsers[2] = function(word, unpacked){
+        //parse a type II word
+        //<word>: number; 32 bits corresponding to a type II word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        var i, patternsPassed;
+
+        //slice up word
+        unpacked['typeIIhead']                 = (word & 0xC0000000) >>> 30;
+        unpacked['masterFilterPatternsPassed'] = (word & 0x3FFF0000) >>> 16;
+        unpacked['PPGpattern']                 = (word & 0x0000FFFF) >>> 0;
+
+        //decode results
+        //filter patterns
+        patternsPassed = '';
+        for(i=0; i<16; i++){
+            if(unpacked['masterFilterPatternsPassed'] & (1<<i))
+                patternsPassed += (i+1) + ', ';
+        }
+
+        patternsPassed = patternsPassed.slice(0, -2) + '.';
+        unpacked['masterFilterPatternsPassed'] = 'Passed filters ' + patternsPassed;
+
+    }.bind(this);
 
 }

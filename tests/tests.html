@@ -20,7 +20,8 @@
                 "setup": function(){
                     parser = new GRIFFINparser;
                     data = [
-                        0x88B67C80
+                        0x88B67C80,
+                        0x00850F81
                     ];
                 },
 
@@ -28,10 +29,10 @@
                     return 0;
                 }
             });
-            
-            QUnit.test( "typeI", function( assert ) {
-                unpacked = {}
-                parser.parsers[1](data[0], unpacked)
+
+            QUnit.test("typeI", function( assert ) {
+                unpacked = {};
+                parser.parsers[1](data[0], unpacked);
 
                 assert.equal(unpacked.packetType, 8, 'type I words always begin with packet type == 0x8.');
                 assert.equal(unpacked.pileUpType, '3 hits', '0x88B67C80 has three hits piled up.');
@@ -43,7 +44,83 @@
                 assert.equal(unpacked.detType, 'HPGe Low Gain', '0x88B67C80 is from a low gain HPGe detector.')
             });
 
-            
+            QUnit.test("typeII", function( assert ){
+                unpacked = {};
+                parser.parsers[2](data[1], unpacked);
+
+                assert.equal(unpacked.typeIIhead, 0, 'type II head is always 0.');
+                assert.equal(unpacked.masterFilterPatternsPassed, 'Passed filters 1, 3, 8.', '0x00850F81 indicates filters 1, 3 and 8 were passed.');
+                assert.equal(unpacked.PPGpattern, 3969);
+
+            }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+            // QUnit.test("typeII", function( assert ){
+            //     unpacked = {};
+            //     parser.parsers[2](data[1], unpacked);
+
+            // }); 
+
+
 
         </script>
       </body>

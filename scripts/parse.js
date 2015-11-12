@@ -101,4 +101,15 @@ GRIFFINparser = function(){
 
     }.bind(this);
 
+    this.parsers[3] = function(word, unpacked){
+        //parse a type III word
+        //<word>: number; 32 bits corresponding to a type III word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeIIIhead']    = (word & 0x80000000) >>> 31;
+        unpacked['masterFilterID'] = (word & 0x7FFFFFFF) >>> 0;
+
+    }
+
 }

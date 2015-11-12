@@ -21,7 +21,8 @@
                     parser = new GRIFFINparser;
                     data = [
                         0x88B67C80,
-                        0x00850F81
+                        0x00850F81,
+                        0x56007C84
                     ];
                 },
 
@@ -54,11 +55,14 @@
 
             }); 
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
+            QUnit.test("typeIII", function( assert ){
+                unpacked = {};
+                parser.parsers[3](data[2], unpacked);
 
-            // }); 
+                assert.equal(unpacked.typeIIIhead, 0, 'type III head is always 0.');
+                assert.equal(unpacked.masterFilterID, 1442872452);
+
+            }); 
 
             // QUnit.test("typeII", function( assert ){
             //     unpacked = {};

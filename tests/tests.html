@@ -25,7 +25,15 @@
                         0x56007C84,
                         0x900461FF,
                         0xA074A998,
-                        0xB074A998
+                        0xB074A998,
+                        0xD00461FF,
+                        0xC57715CC,
+                        0x2074A998,
+                        0x5874A998,
+                        0x2074A998,
+                        0x5874A998,
+                        0x2074A998,
+                        0x5874A998
                     ];
                 },
 
@@ -36,7 +44,7 @@
 
             QUnit.test("typeI", function( assert ) {
                 unpacked = {};
-                parser.parsers[1](data[0], unpacked);
+                parser.parsers['I'](data[0], unpacked);
 
                 assert.equal(unpacked.packetType, 8, 'type I words always begin with packet type == 0x8.');
                 assert.equal(unpacked.pileUpType, '3 hits', '0x88B67C80 has three hits piled up.');
@@ -50,7 +58,7 @@
 
             QUnit.test("typeII", function( assert ){
                 unpacked = {};
-                parser.parsers[2](data[1], unpacked);
+                parser.parsers['II'](data[1], unpacked);
 
                 assert.equal(unpacked.typeIIhead, 0, 'type II head is always 0.');
                 assert.equal(unpacked.masterFilterPatternsPassed, 'Passed filters 1, 3, 8.', '0x00850F81 indicates filters 1, 3 and 8 were passed.');
@@ -60,7 +68,7 @@
 
             QUnit.test("typeIII", function( assert ){
                 unpacked = {};
-                parser.parsers[3](data[2], unpacked);
+                parser.parsers['III'](data[2], unpacked);
 
                 assert.equal(unpacked.typeIIIhead, 0, 'type III head is always 0.');
                 assert.equal(unpacked.masterFilterID, 1442872452);
@@ -69,7 +77,7 @@
 
             QUnit.test("typeIV", function( assert ){
                 unpacked = {};
-                parser.parsers[4](data[3], unpacked);
+                parser.parsers['IV'](data[3], unpacked);
 
                 assert.equal(unpacked.typeIVPacketType, 9, 'type IV packet type is always 9.');
                 assert.equal(unpacked.channelTriggerID, 287231);
@@ -78,7 +86,7 @@
 
             QUnit.test("typeV", function( assert ){
                 unpacked = {};
-                parser.parsers[5](data[4], unpacked);
+                parser.parsers['V'](data[4], unpacked);
 
                 assert.equal(unpacked.typeVPacketType, 0xA, 'type V packet type is always 0xA.');
                 assert.equal(unpacked.timestampLowBits, 7645592);
@@ -87,7 +95,7 @@
 
             QUnit.test("typeVI", function( assert ){
                 unpacked = {};
-                parser.parsers[6](data[5], unpacked);
+                parser.parsers['VI'](data[5], unpacked);
 
                 assert.equal(unpacked.typeVIPacketType, 0xB, 'type VI packet type is always 0xB.');
                 assert.equal(unpacked.deadtime, '4660 ns', '0xB074A998 corresponds to a deadtime of 466 ns.');
@@ -95,57 +103,146 @@
 
             }); 
 
-            // QUnit.test("typeII", function( assert ){
+            QUnit.test("typeVIa", function( assert ){
+                unpacked = {};
+                parser.parsers['VIa'](data[6], unpacked);
+
+                assert.equal(unpacked.typeVIaPacketType, 0xD, 'type VIa packet type is always 0xD.');
+                assert.equal(unpacked.networkPacketID, 287231);
+
+            }); 
+
+            QUnit.test("typeVIb", function( assert ){
+                unpacked = {};
+                parser.parsers['VIb'](data[7], unpacked);
+
+                assert.equal(unpacked.typeVIbPacketType, 0xC, 'type VIb packet type is always 0xC.');
+                assert.equal(unpacked.waveformSample, 91690444);
+
+            }); 
+
+            QUnit.test("typeVII", function( assert ){
+                unpacked = {};
+                parser.parsers['VII'](data[8], unpacked);
+
+                assert.equal(unpacked.typeVIIhead, 0, 'type VII head is always 0.');
+                assert.equal(unpacked.K1upper, 8, '0x2074A998 indicates upper K1 bits corresponding to 01000.');
+                assert.equal(unpacked.K1pulseHeight, 7645592);
+
+            }); 
+
+            QUnit.test("typeVIII", function( assert ){
+                unpacked = {};
+                parser.parsers['VIII'](data[9], unpacked);
+
+                assert.equal(unpacked.typeVIIIhead, 0, 'type VIII head is always 0.');
+                assert.equal(unpacked.K1lower, 22, '0x5874A998 indicates lower K1 bits corresponding to 10110.');
+                assert.equal(unpacked.K1ampCorrectedTiming, '76455920 ns');
+
+            }); 
+
+            QUnit.test("typeIX", function( assert ){
+                unpacked = {};
+                parser.parsers['IX'](data[10], unpacked);
+
+                assert.equal(unpacked.typeIXhead, 0, 'type IX head is always 0.');
+                assert.equal(unpacked.K2upper, 8, '0x2074A998 indicates upper K2 bits corresponding to 01000.');
+                assert.equal(unpacked.K2pulseHeight, 7645592);
+
+            }); 
+
+            QUnit.test("typeX", function( assert ){
+                unpacked = {};
+                parser.parsers['X'](data[11], unpacked);
+
+                assert.equal(unpacked.typeXhead, 0, 'type X head is always 0.');
+                assert.equal(unpacked.K2lower, 22, '0x5874A998 indicates lower K2 bits corresponding to 10110.');
+                assert.equal(unpacked.K2ampCorrectedTiming, '76455920 ns');
+
+            }); 
+
+            QUnit.test("typeXI", function( assert ){
+                unpacked = {};
+                parser.parsers['XI'](data[12], unpacked);
+
+                assert.equal(unpacked.typeXIhead, 0, 'type XI head is always 0.');
+                assert.equal(unpacked.K3upper, 8, '0x2074A998 indicates upper K3 bits corresponding to 01000.');
+                assert.equal(unpacked.K3pulseHeight, 7645592);
+
+            }); 
+
+            QUnit.test("typeXII", function( assert ){
+                unpacked = {};
+                parser.parsers['XII'](data[13], unpacked);
+
+                assert.equal(unpacked.typeXIIhead, 0, 'type XII head is always 0.');
+                assert.equal(unpacked.K3lower, 22, '0x5874A998 indicates lower K3 bits corresponding to 10110.');
+                assert.equal(unpacked.K3ampCorrectedTiming, '76455920 ns');
+
+            }); 
+
+            // QUnit.test("typeVIa", function( assert ){
             //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
+            //     parser.parsers[''](data[1], unpacked);
 
             // }); 
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
 
-            // }); 
+            QUnit.module('GRIFFIN parser post-processing', {
+                "setup": function(){
+                    parser = new GRIFFINparser;
+                    data = [
+                        0x88B67C80,
+                        0x00850F81,
+                        0x56007C84,
+                        0x900461FF,
+                        0xA074A998,
+                        0xB074A998,
+                        0xD00461FF,
+                        0xC57715CC,
+                        0x2074A998,
+                        0x5874A998,
+                        0x2074A998,
+                        0x5874A998,
+                        0x2074A998,
+                        0x5874A998
+                    ];
 
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
-
-            // }); 
-
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
-
-            // }); 
-
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
-
-            // }); 
-
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
-
-            // }); 
-
-            // QUnit.test("typeII", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[2](data[1], unpacked);
-
-            // }); 
-
-
-            QUnit.test("post-processing", function ( assert ){
                     unpacked = {};
-                    parser.parsers[5](data[4], unpacked);
-                    parser.parsers[6](data[5], unpacked);
+                    parser.parsers['I'](data[0], unpacked);
+                    parser.parsers['II'](data[1], unpacked);
+                    parser.parsers['III'](data[2], unpacked);
+                    parser.parsers['IV'](data[3], unpacked);
+                    parser.parsers['V'](data[4], unpacked);
+                    parser.parsers['VI'](data[5], unpacked);
+                    parser.parsers['VIa'](data[6], unpacked);
+                    parser.parsers['VIb'](data[7], unpacked);
+                    parser.parsers['VII'](data[8], unpacked);
+                    parser.parsers['VIII'](data[9], unpacked);
+                    parser.parsers['IX'](data[10], unpacked);
+                    parser.parsers['X'](data[11], unpacked);
+                    parser.parsers['XI'](data[12], unpacked);
+                    parser.parsers['XII'](data[13], unpacked);
+                    //parser.parsers['V'](data[4], unpacked);
+                },
 
-                    parser.reconstructTimestamp(unpacked)
+                "teardown": function(){
+                    return 0;
+                }
+            });
 
-                    assert.equal(unpacked.timestamp, 2858308381080)
+            QUnit.test("timestamp", function ( assert ){
+
+                    parser.reconstructTimestamp(unpacked);
+                    assert.equal(unpacked.timestamp, 2858308381080);
+            });
+
+            QUnit.test("K", function ( assert ){
+                    parser.reconstructK(unpacked);
+
+                    assert.equal(unpacked.K1, 278);
+                    assert.equal(unpacked.K2, 278);
+                    assert.equal(unpacked.K3, 278);
             });
 
         </script>

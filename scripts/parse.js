@@ -39,8 +39,8 @@ GRIFFINparser = function(){
     // core parser functions
     //////////////////////////////
 
-    this.parsers = []
-    this.parsers[1] = function(word, unpacked){
+    this.parsers = {};
+    this.parsers.I = function(word, unpacked){
         //parse a type I word
         //<word>: number; 32 bits corresponding to a type I word
         //<unpacked>: object; a key-value store for holding the unpacked results
@@ -76,7 +76,7 @@ GRIFFINparser = function(){
 
     }.bind(this);
 
-    this.parsers[2] = function(word, unpacked){
+    this.parsers.II = function(word, unpacked){
         //parse a type II word
         //<word>: number; 32 bits corresponding to a type II word
         //<unpacked>: object; a key-value store for holding the unpacked results
@@ -101,7 +101,7 @@ GRIFFINparser = function(){
 
     }.bind(this);
 
-    this.parsers[3] = function(word, unpacked){
+    this.parsers.III = function(word, unpacked){
         //parse a type III word
         //<word>: number; 32 bits corresponding to a type III word
         //<unpacked>: object; a key-value store for holding the unpacked results
@@ -112,7 +112,7 @@ GRIFFINparser = function(){
 
     }.bind(this);
 
-    this.parsers[4] = function(word, unpacked){
+    this.parsers.IV = function(word, unpacked){
         //parse a type IV word
         //<word>: number; 32 bits corresponding to a type IV word
         //<unpacked>: object; a key-value store for holding the unpacked results
@@ -122,7 +122,7 @@ GRIFFINparser = function(){
         unpacked['channelTriggerID'] = (word & 0x0FFFFFFF) >>> 0;
     }.bind(this);
 
-    this.parsers[5] = function(word, unpacked){
+    this.parsers.V = function(word, unpacked){
         //parse a type V word
         //<word>: number; 32 bits corresponding to a type V word
         //<unpacked>: object; a key-value store for holding the unpacked results
@@ -132,7 +132,7 @@ GRIFFINparser = function(){
         unpacked['timestampLowBits'] = (word & 0x0FFFFFFF) >>> 0;
     }.bind(this);
 
-    this.parsers[6] = function(word, unpacked){
+    this.parsers.VI = function(word, unpacked){
         //parse a type VI word
         //<word>: number; 32 bits corresponding to a type VI word
         //<unpacked>: object; a key-value store for holding the unpacked results
@@ -148,6 +148,103 @@ GRIFFINparser = function(){
 
     }.bind(this);
 
+    this.parsers.VIa = function(word, unpacked){
+        //parse a type VIa word
+        //<word>: number; 32 bits corresponding to a type VIa word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeVIaPacketType'] = (word & 0xF0000000) >>> 28;
+        unpacked['networkPacketID']   = (word & 0x0FFFFFFF) >>> 0;
+    }.bind(this);
+
+    this.parsers.VIb = function(word, unpacked){
+        //parse a type VIb word
+        //<word>: number; 32 bits corresponding to a type VIb word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeVIbPacketType'] = (word & 0xF0000000) >>> 28;
+        unpacked['waveformSample']    = (word & 0x0FFFFFFF) >>> 0;
+    }.bind(this);
+
+    this.parsers.VII = function(word, unpacked){
+        //parse a type VII word
+        //<word>: number; 32 bits corresponding to a type VII word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeVIIhead'] = (word & 0x80000000) >>> 31;
+        unpacked['K1upper'] = (word & 0x7C000000) >>> 26;
+        unpacked['K1pulseHeight'] = (word & 0x03FFFFFF) >>> 0;
+    }.bind(this);
+
+    this.parsers.VIII = function(word, unpacked){
+        //parse a type VIII word
+        //<word>: number; 32 bits corresponding to a type VIII word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeVIIIhead'] = (word & 0x80000000) >>> 31;
+        unpacked['K1lower'] = (word & 0x7C000000) >>> 26;
+        unpacked['K1ampCorrectedTiming'] = (word & 0x03FFFFFF) >>> 0;
+
+        //decode results
+        unpacked['K1ampCorrectedTiming'] = unpacked['K1ampCorrectedTiming']*10 + ' ns'
+
+    }.bind(this);
+
+    this.parsers.IX = function(word, unpacked){
+        //parse a type IX word
+        //<word>: number; 32 bits corresponding to a type IX word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeIXhead'] = (word & 0x80000000) >>> 31;
+        unpacked['K2upper'] = (word & 0x7C000000) >>> 26;
+        unpacked['K2pulseHeight'] = (word & 0x03FFFFFF) >>> 0;
+    }.bind(this);
+
+    this.parsers.X = function(word, unpacked){
+        //parse a type X word
+        //<word>: number; 32 bits corresponding to a type X word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeXhead'] = (word & 0x80000000) >>> 31;
+        unpacked['K2lower'] = (word & 0x7C000000) >>> 26;
+        unpacked['K2ampCorrectedTiming'] = (word & 0x03FFFFFF) >>> 0;
+
+        //decode results
+        unpacked['K2ampCorrectedTiming'] = unpacked['K2ampCorrectedTiming']*10 + ' ns'
+    }.bind(this);
+
+    this.parsers.XI = function(word, unpacked){
+        //parse a type XI word
+        //<word>: number; 32 bits corresponding to a type XI word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeXIhead'] = (word & 0x80000000) >>> 31;
+        unpacked['K3upper'] = (word & 0x7C000000) >>> 26;
+        unpacked['K3pulseHeight'] = (word & 0x03FFFFFF) >>> 0;
+    }.bind(this);
+
+    this.parsers.XII = function(word, unpacked){
+        //parse a type XII word
+        //<word>: number; 32 bits corresponding to a type XII word
+        //<unpacked>: object; a key-value store for holding the unpacked results
+
+        //slice up word
+        unpacked['typeXIIhead'] = (word & 0x80000000) >>> 31;
+        unpacked['K3lower'] = (word & 0x7C000000) >>> 26;
+        unpacked['K3ampCorrectedTiming'] = (word & 0x03FFFFFF) >>> 0;
+
+        //decode results
+        unpacked['K3ampCorrectedTiming'] = unpacked['K3ampCorrectedTiming']*10 + ' ns'
+    }.bind(this);
+
+
     ///////////////////////
     // post-processing
     ///////////////////////
@@ -157,6 +254,30 @@ GRIFFINparser = function(){
         //recombine the timestamp from info in words V and VI
 
         unpacked.timestamp = (unpacked.timestampHighBits * Math.pow(2, 28)) + unpacked.timestampLowBits; //yes, adding - ok since bitshift, gets around JS sigining.
+    }
+
+    this.assembleK = function(lower, upper){
+        //<lower>: number; lowest 5 bits == least significant 5 bits of K value
+        //<upper>: number; lowest 5 bits == next 5 bits of K
+
+        return upper*Math.pow(2,5) + (lower & 0x1F)
+    }
+
+    this.reconstructK = function(unpacked){
+        //<unpacked>: object; a key-value store for holding the unpacked results
+        //reassembles all present Ks.
+
+        if(typeof unpacked.K1upper == 'number' && typeof unpacked.K1lower == 'number'){
+            unpacked.K1 = this.assembleK(unpacked.K1lower, unpacked.K1upper);
+        }
+
+        if(typeof unpacked.K1upper == 'number' && typeof unpacked.K1lower == 'number'){
+            unpacked.K2 = this.assembleK(unpacked.K2lower, unpacked.K2upper);
+        }
+
+        if(typeof unpacked.K3upper == 'number' && typeof unpacked.K3lower == 'number'){
+            unpacked.K3 = this.assembleK(unpacked.K3lower, unpacked.K3upper);
+        }
     }
 
 }

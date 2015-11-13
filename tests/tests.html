@@ -33,7 +33,8 @@
                         0x2074A998,
                         0x5874A998,
                         0x2074A998,
-                        0x5874A998
+                        0x5874A998,
+                        0xE0000000
                     ];
                 },
 
@@ -181,12 +182,6 @@
 
             }); 
 
-            // QUnit.test("typeVIa", function( assert ){
-            //     unpacked = {};
-            //     parser.parsers[''](data[1], unpacked);
-
-            // }); 
-
 
             QUnit.module('GRIFFIN parser post-processing', {
                 "setup": function(){
@@ -205,7 +200,8 @@
                         0x2074A998,
                         0x5874A998,
                         0x2074A998,
-                        0x5874A998
+                        0x5874A998,
+                        0xE0000000
                     ];
 
                     unpacked = {};
@@ -233,16 +229,129 @@
 
             QUnit.test("timestamp", function ( assert ){
 
-                    parser.reconstructTimestamp(unpacked);
-                    assert.equal(unpacked.timestamp, 2858308381080);
+                parser.reconstructTimestamp(unpacked);
+                assert.equal(unpacked.timestamp, 2858308381080);
             });
 
             QUnit.test("K", function ( assert ){
-                    parser.reconstructK(unpacked);
+                parser.reconstructK(unpacked);
 
-                    assert.equal(unpacked.K1, 278);
-                    assert.equal(unpacked.K2, 278);
-                    assert.equal(unpacked.K3, 278);
+                assert.equal(unpacked.K1, 278);
+                assert.equal(unpacked.K2, 278);
+                assert.equal(unpacked.K3, 278);
+            });
+
+            QUnit.module('GRIFFIN full chain processing', {
+                "setup": function(){
+                    parser = new GRIFFINparser;
+                    data = [
+                        0x88B67C80,
+                        0x00850F81,
+                        0x56007C84,
+                        0x900461FF,
+                        0xA074A998,
+                        0xB074A998,
+                        0xD00461FF,
+                        0xC57715CC,
+                        0x2074A998,
+                        0x5874A998,
+                        0x2074A998,
+                        0x5874A998,
+                        0x2074A998,
+                        0x5874A998,
+                        0xE0000000
+                    ];
+
+                    unpacked = {};
+                    parser.parsers['I'](data[0], unpacked);
+                    parser.parsers['II'](data[1], unpacked);
+                    parser.parsers['III'](data[2], unpacked);
+                    parser.parsers['IV'](data[3], unpacked);
+                    parser.parsers['V'](data[4], unpacked);
+                    parser.parsers['VI'](data[5], unpacked);
+                    parser.parsers['VIa'](data[6], unpacked);
+                    parser.parsers['VIb'](data[7], unpacked);
+                    parser.parsers['VII'](data[8], unpacked);
+                    parser.parsers['VIII'](data[9], unpacked);
+                    parser.parsers['IX'](data[10], unpacked);
+                    parser.parsers['X'](data[11], unpacked);
+                    parser.parsers['XI'](data[12], unpacked);
+                    parser.parsers['XII'](data[13], unpacked);
+                    //parser.parsers['V'](data[4], unpacked);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("assessComposition", function ( assert ){
+
+                var flags = parser.assessComposition(data),
+                    buffer;
+
+                //nominally correct
+                assert.deepEqual(flags, []);
+
+                //not enough words
+                buffer = data.slice(1,2)
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Not enough words to make an event.'])
+
+                //wrong first word
+                buffer = data.slice()
+                buffer[0] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['First word does not start with 0x8'])
+
+                //wrong second word
+                buffer = data.slice()
+                buffer[1] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Second word does not start with 00'])
+
+                //wrong third word
+                buffer = data.slice()
+                buffer[2] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Third word does not start with 0'])
+
+                //wrong fourth word
+                buffer = data.slice()
+                buffer[3] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Fourth word does not start with 0x9'])
+
+                //wrong fifth word
+                buffer = data.slice()
+                buffer[4] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Fifth word does not start with 0xA'])
+
+                //wrong sixth word
+                buffer = data.slice()
+                buffer[5] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Sixth word does not start with 0xB'])
+
+                //missing type VIa word OK
+                buffer = data.slice()
+                buffer.splice(6,1);
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, [])
+
+                //bunch of waveform words OK
+                buffer = data.slice()
+                buffer.splice(6,1, [0xC57715CC, 0xC57715CC, 0xC57715CC, 0xC57715CC]);
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, [])                
+
+                //missing event trailer
+                buffer = data.slice()
+                buffer.splice(-1,1);
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Final word does not start with 0xE'])
+
             });
 
         </script>

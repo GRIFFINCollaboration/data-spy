@@ -1,0 +1,27 @@
+<div class="table-responsive">
+    <table class="table unpackingTable">
+
+        <tr>
+            <td></td>
+            <td>Hex</td>
+            <td>Parsed</td>
+        </tr>
+
+        {{ # words}}
+
+            <tr class='wordHeader'>
+                <td id='word{{label}}title' colspan='3'>Word {{label}}</td>
+            </tr>
+
+            {{ # members}}
+                <tr>
+                    <td id='{{id}}'>{{title}}</td>
+                    <td id='{{id}}Hex'></td>
+                    <td id='{{id}}Parsed'></td>
+                </tr>
+            {{ / members}}
+
+        {{ / words}}
+
+    </table>
+</div>

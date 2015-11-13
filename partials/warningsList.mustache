@@ -1,0 +1,13 @@
+{{ # bad }}
+    <h2><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Data Corruption Warnings</h2>
+    <ul>
+        {{ # warnings }}
+            <li>{{.}}</li>
+        {{ / warnings}}
+    </ul>
+{{ / bad }}
+
+{{ # good }}
+    <h2><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> All OK</h2>
+{{ / good }}
+

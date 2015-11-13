@@ -259,6 +259,7 @@ GRIFFINparser = function(){
     this.assembleK = function(lower, upper){
         //<lower>: number; lowest 5 bits == least significant 5 bits of K value
         //<upper>: number; lowest 5 bits == next 5 bits of K
+        //returns the K value corresponding to these two chunks
 
         return upper*Math.pow(2,5) + (lower & 0x1F)
     }
@@ -278,6 +279,148 @@ GRIFFINparser = function(){
         if(typeof unpacked.K3upper == 'number' && typeof unpacked.K3lower == 'number'){
             unpacked.K3 = this.assembleK(unpacked.K3lower, unpacked.K3upper);
         }
+    }
+
+    /////////////////////
+    // full chain
+    /////////////////////
+
+    this.assessComposition = function(words){
+        //<words>: array of numbers; corresponds to the words composing one event.
+        //check that the types and configurations of words make sense.
+        //return an array, empty if all good, containing strings describing mistakes otherwise.
+
+        var i, flags = [],
+            waveformWords;
+
+        //must have at least 9 words
+        if(words.length < 9){
+            flags.push('Not enough words to make an event.')
+            return flags;
+        }
+
+        //first word must start with 0x8
+        if( (words[0] & 0xF0000000) >>> 28 != 8 )
+            flags.push('First word does not start with 0x8');
+
+        //second word must start with 00
+        if( (words[1] & 0xC0000000) >>> 30 != 0 )
+            flags.push('Second word does not start with 00');
+
+        //third word must start with 0
+        if( (words[2] & 0x80000000) >>> 31 != 0 )
+            flags.push('Third word does not start with 0');
+
+        //fourth word must start with 0x9
+        if( (words[3] & 0xF0000000) >>> 28 != 9 )
+            flags.push('Fourth word does not start with 0x9'); 
+
+        //fifth word must start with 0xa
+        if( (words[4] & 0xF0000000) >>> 28 != 0xA )
+            flags.push('Fifth word does not start with 0xA');
+
+        //sixth word must start with 0xB
+        if( (words[5] & 0xF0000000) >>> 28 != 0xB )
+            flags.push('Sixth word does not start with 0xB'); 
+
+        //seventh word must start with either 0xD or 0xC or 0
+        if( ((words[6] & 0xF0000000) >>> 28 != 0xD) && ((words[6] & 0xF0000000) >>> 28 != 0xC) && ((words[6] & 0x80000000) >>> 31 != 0))
+            flags.push('Seventh word does not start with 0xD or 0xC or 0');
+
+        //allow a run of type VIb words, possibly after a type VIa word, before a type VII word
+        //determine earliest possible index for type VIb word
+        if( ((words[6] & 0xF0000000) >>> 28 == 0xD) )
+            waveformWords = 7;
+        else
+            waveformWords = 6;
+
+        while(true){
+            if ((words[waveformWords] & 0x80000000) >>> 31 == 0) break;
+
+            if( ((words[waveformWords] & 0xF0000000) >>> 28 == 0xC) )
+                waveformWords++;
+            else
+                flags.push('Unrecognized word between words VI and VII')
+        }
+
+        //must end in event trailer:
+        if( (words[words.length - 1] & 0xF0000000) >>> 28 != 0xE ){
+            flags.push('Final word does not start with 0xE');
+            return flags; 
+        }   
+
+        //K-words come in pairs and are concluded by the event trialer word:
+        //waveformWords now points at the type VII word
+        if( (words.length - waveformWords)%2 != 1 ){
+            flags.push('Odd number of K words (should come in pairs)')
+        }
+
+        //make sure K-words all start with 0
+        for(i=waveformWords; i<words.length; i++){
+            if( (words[i] & 0x80000000) >>> 31 != 0 )
+                flags.push('K-word does not start with 0');
+                return flags   
+        }
+
+        return flags;
+    }
+
+    this.unpackAll = function(words){
+        //<words>: array of numbers; corresponds to the words composing one event.
+        //run unpacking on all words in the event. Assumes words represents a valid event; raise flags elsewhere.
+
+        var unpacked = {},
+            waveformWords,
+            i, K;
+
+        this.parsers.I(words[0], unpacked);
+        this.parsers.II(words[1], unpacked);
+        this.parsers.III(words[2], unpacked);
+        this.parsers.IV(words[3], unpacked);
+        this.parsers.V(words[4], unpacked);
+        this.parsers.VI(words[5], unpacked);
+
+        //is there a type VIa word?
+        if( ((words[6] & 0xF0000000) >>> 28 == 0xD) ){
+            this.parsers.VIa(words[6], unpacked);
+            waveformWords = 7;
+        } else
+            waveformWords = 6;
+
+        //unpack any type VIb words, if present
+        while(true){
+            if ((words[waveformWords] & 0x80000000) >>> 31 == 0) break;
+
+            this.parsers.VIb(words[waveformWords], unpacked);
+            waveformWords++;
+        }
+
+        //unpack K-words
+        K = 1;
+        for(i=waveformWords; i<words.length-1; i+=2){
+            if(K == 1){
+                this.parsers.VII(words[i], unpacked);
+                this.parsers.VIII(words[i+1], unpacked);
+                K++;
+            } else if(K == 2){
+                this.parsers.IX(words[i], unpacked);
+                this.parsers.X(words[i+1], unpacked);
+                K++;
+            } else if(K == 3){
+                this.parsers.XI(words[i], unpacked);
+                this.parsers.XII(words[i+1], unpacked);
+                K++;
+            }
+        }
+
+        //unpack event trailer
+        //TBD
+
+        //post processing
+        this.reconstructTimestamp(unpacked);
+        this.reconstructK(unpacked);
+
+        return unpacked
     }
 
 }

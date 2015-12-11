@@ -1,4 +1,8 @@
-function defineTableStructure(){
+//////////////////////////////////
+// template structure data
+//////////////////////////////////
+
+function defineGRIF16fragmentTableStructure(){
     //returns an array describing the table sections and entries, for use by the templater.
 
     var words = [];
@@ -8,23 +12,18 @@ function defineTableStructure(){
         "label": 'I',
         "members": [
             {
-                'id': 'packetType',
-                'title': 'Type I Packet Label'
+                'id': 'typeIpacketType',
+                'title': 'Type I Packet Type'
             },
 
             {
-                'id': 'pileUpType',
-                'title': 'Pile Up Type'
+                'id': 'moduleType',
+                'title': 'Module Type'
             },
 
             {
-                'id': 'dataType',
-                'title': 'Data Type'
-            },
-
-            {
-                'id': 'numFilterPatterns',
-                'title': 'No. Filter Patterns'
+                'id': 'wordCount',
+                'title': 'Word Count'
             },
 
             {
@@ -43,18 +42,13 @@ function defineTableStructure(){
         "label": 'II',
         "members": [
             {
-                'id': 'typeIIhead',
-                'title': 'Type II Packet Label'
+                'id': 'typeIIpacketType',
+                'title': 'Type II Packet Type'
             },
 
             {
-                'id': 'masterFilterPatternsPassed',
-                'title': 'Master Filter Patterns Passed'
-            },
-
-            {
-                'id': 'PPGpattern',
-                'title': 'PPG Pattern'
+                'id': 'networkPacketCounterValue',
+                'title': 'Network Packet Counter Value'
             }
         ]
     }
@@ -68,9 +62,25 @@ function defineTableStructure(){
             },
 
             {
-                'id': 'masterFilterID',
-                'title': 'Master Filter ID'
+                'id': 'filterPatterns',
+                'title': 'Filter Patterns'
+            },
+
+            {
+                'id': 'waveformIndicator',
+                'title': 'Waveform Indicator'
+            },
+
+            {
+                'id': 'reserved',
+                'title': 'Reserved Bits'
+            },
+
+            {
+                'id': 'pileupType',
+                'title': 'Pileup Type'
             }
+
         ]
     }
 
@@ -78,13 +88,13 @@ function defineTableStructure(){
         "label": 'IV',
         "members": [
             {
-                'id': 'typeIVPacketType',
+                'id': 'typeIVhead',
                 'title': 'Type IV Packet Label'
             },
 
             {
-                'id': 'channelTriggerID',
-                'title': 'Channel Trigger ID'
+                'id': 'filterConditionCounterValue',
+                'title': 'Filter Condition Counter Value'
             }
         ]
     }
@@ -94,12 +104,12 @@ function defineTableStructure(){
         "members": [
             {
                 'id': 'typeVPacketType',
-                'title': 'Type V Packet Label'
+                'title': 'Type V Packet Type'
             },
 
             {
-                'id': 'timestampLowBits',
-                'title': 'Timestamp Low Bits'
+                'id': 'channelTriggerCounterValue',
+                'title': 'Channel Trigger Counter Value'
             }
         ]
     }
@@ -109,7 +119,22 @@ function defineTableStructure(){
         "members": [
             {
                 'id': 'typeVIPacketType',
-                'title': 'Type VI Packet Label'
+                'title': 'Type VI Packet Type'
+            },
+
+            {
+                'id': 'timestampLowBits',
+                'title': 'Timestamp Low Bits'
+            }
+        ]
+    }
+
+    words[6] = {
+        "label": 'VII',
+        "members": [
+            {
+                'id': 'typeVIIPacketType',
+                'title': 'Type VII Packet Type'
             },
 
             {
@@ -124,57 +149,22 @@ function defineTableStructure(){
         ]
     }
 
-    words[6] = {
-        "label": 'VIa',
-        "members": [
-            {
-                'id': 'typeVIaPacketType',
-                'title': 'Type VIa Packet Label'
-            },
+    // words[7] = {
+    //     "label": 'VIIa',
+    //     "members": [
+    //         {
+    //             'id': 'typeVIIaPacketType',
+    //             'title': 'Type VIIa Packet Type'
+    //         },
 
-            {
-                'id': 'networkPacketID',
-                'title': 'Network Packet ID'
-            }
-        ]
-    }
+    //         {
+    //             'id': 'waveformSample',
+    //             'title': 'Waveform Sample'
+    //         }
+    //     ]
+    // }
 
     words[7] = {
-        "label": 'VIb',
-        "members": [
-            {
-                'id': 'typeVIbPacketType',
-                'title': 'Type VIb Packet Label'
-            },
-
-            {
-                'id': 'waveformSample',
-                'title': 'Waveform Sample'
-            }
-        ]
-    }
-
-    words[8] = {
-        "label": 'VII',
-        "members": [
-            {
-                'id': 'typeVIIhead',
-                'title': 'Type VII Packet Label'
-            },
-
-            {
-                'id': 'K1upper',
-                'title': 'K1 Upper Bits'
-            },
-
-            {
-                'id': 'K1pulseHeight',
-                'title': 'K1 Pulse Height'
-            }
-        ]
-    }
-
-    words[9] = {
         "label": 'VIII',
         "members": [
             {
@@ -183,18 +173,18 @@ function defineTableStructure(){
             },
 
             {
-                'id': 'K1lower',
-                'title': 'K1 Lower Bits'
+                'id': 'upperIntLength',
+                'title': 'Upper Integration Length'
             },
 
             {
-                'id': 'K1ampCorrectedTiming',
-                'title': 'K1 Amplitude Corrected Timing'
+                'id': 'pulseHeight',
+                'title': 'Pulse Height'
             }
         ]
     }
 
-    words[10] = {
+    words[8] = {
         "label": 'IX',
         "members": [
             {
@@ -203,83 +193,146 @@ function defineTableStructure(){
             },
 
             {
-                'id': 'K2upper',
-                'title': 'K2 Upper Bits'
+                'id': 'lowerIntLength',
+                'title': 'Lower Integration Length'
             },
 
             {
-                'id': 'K2pulseHeight',
-                'title': 'K2 Pulse Height'
+                'id': 'CFD',
+                'title': 'CFD'
             }
         ]
     }
 
-    words[11] = {
+    words[9] = {
         "label": 'X',
         "members": [
             {
-                'id': 'typeXhead',
-                'title': 'Type X Packet Label'
+                'id': 'typeXpacketType',
+                'title': 'Type X Packet Type'
             },
 
             {
-                'id': 'K2lower',
-                'title': 'K2 Lower Bits'
+                'id': 'channelAcceptedCounterValue',
+                'title': 'Channel Accepted Counter Value'
             },
 
             {
-                'id': 'K2ampCorrectedTiming',
-                'title': 'K2 Amplitude Corrected Timing'
+                'id': 'eventTrailerChannelTriggerCounterValue',
+                'title': 'Repeat Channel Trigger Counter Value Low Bits'
             }
         ]
-    }
-
-    words[12] = {
-        "label": 'XI',
-        "members": [
-            {
-                'id': 'typeXIhead',
-                'title': 'Type XI Packet Label'
-            },
-
-            {
-                'id': 'K3upper',
-                'title': 'K3 Upper Bits'
-            },
-
-            {
-                'id': 'K3pulseHeight',
-                'title': 'K3 Pulse Height'
-            }
-        ]
-    }
-
-    words[13] = {
-        "label": 'XII',
-        "members": [
-            {
-                'id': 'typeXIIhead',
-                'title': 'Type XII Packet Label'
-            },
-
-            {
-                'id': 'K3lower',
-                'title': 'K3 Lower Bits'
-            },
-
-            {
-                'id': 'K3ampCorrectedTiming',
-                'title': 'K3 Amplitude Corrected Timing'
-            }
-        ]
-    }
-
-    words[14] = {
-        "label": 'XIII',
-        "members": []
     }
 
     return words
+
+}
+
+///////////////////////////
+// parsing handlers
+///////////////////////////
+
+function parseODB(payload){
+    //take the events from the odb, packed as payload = [grif16 fragment, grif16 scalar, grif 4g fragment, ppg], and unpack them.
+
+    parseGRIF16fragment(payload[0]);
+    //parseGRIF16scalar(payload[0]);
+    //parseGRIF4Gfragment(payload[0]);
+    //parsePPG(payload[0]);
+}
+
+function parseGRIF16fragment(payload){
+    
+    var parser = new GRIF16fragmentParser,
+        flags, unpacked,
+        warnings = document.getElementById('warningsDiv'),
+        warningsData = {},
+        keys;
+
+    //assess & report composition of event
+    flags = parser.assessComposition(payload);
+
+    if(flags.length == 0){
+        warningsData.good = true;
+        warnings.classList.remove('raised');
+        warnings.classList.add('ok');
+    } else {
+        warningsData.bad = {
+            "warnings" : flags
+        }
+        warnings.classList.remove('ok');
+        warnings.classList.add('raised');
+    }
+
+    warnings.innerHTML = Mustache.to_html(
+            dataStore.partials.warningsList,
+            warningsData
+        )
+
+    //fill out table
+    unpacked = parser.unpackAll(payload);
+    keys = Object.keys(unpacked);
+    for(i=0; i<keys.length; i++){
+        if(document.getElementById(keys[i] + 'Parsed')){
+            document.getElementById(keys[i] + 'Hex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+            document.getElementById(keys[i] + 'Parsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+        }
+    }
+
+    //report reconstructed values
+    document.getElementById('grif16fragmentTimestamp').innerHTML = 'Timestamp: ' + unpacked.timestamp[1];
+    document.getElementById('grif16fragmentIntegrationLength').innerHTML = 'Integration Length: ' + unpacked.integrationLength[0];
+
+    //generate waveform plot if needed:
+    if(dataStore.GRIF16fragmentDetails.nTypeVIIa > 0){
+        plotWaveform(unpacked['waveformSample']);
+    }
+}
+
+function plotWaveform(wvfrm){
+    //plot the reported waveform, described by array of values <wvfrm>.
+
+    var data,
+        layout = {
+            xaxis:{
+                zerolinecolor: '#000000',
+                gridcolor: '#000000',
+                tickfont:{
+                    color: '#000000'
+                }
+            },
+            yaxis:{
+                title: 'Waveform',
+                zerolinecolor: '#000000',
+                gridcolor: '#000000',
+                tickfont:{
+                    color: '#000000'
+                }
+            },
+        }
+
+    //construct the plotly data object
+    data = [
+        {
+            y: wvfrm,
+            type: 'scatter'
+        }
+    ]
+    
+    Plotly.newPlot('waveformPlot', data, layout);    
+}
+
+
+//////////////////
+// helpers
+//////////////////
+
+function manageView(viewID){
+    //show this event type and hide the previous
+
+    document.getElementById(dataStore.currentViewID).classList.add('hidden');
+    document.getElementById(viewID).classList.remove('hidden');
+    dataStore.currentViewID = viewID;
 
 }
 
@@ -354,44 +407,4 @@ function deleteNode(id){
     if (node.parentNode) {
         node.parentNode.removeChild(node);
     }
-}
-
-function parseODB(payload){
-    
-    var parser = new GRIFFINparser,
-        flags, unpacked,
-        warnings = document.getElementById('warningsDiv'),
-        warningsData = {},
-        keys;
-
-    //assess & report composition of event
-    flags = parser.assessComposition(payload);
-
-    if(flags.length == 0){
-        warningsData.good = true;
-        warnings.classList.remove('raised');
-        warnings.classList.add('ok');
-    } else {
-        warningsData.bad = {
-            "warnings" : flags
-        }
-        warnings.classList.remove('ok');
-        warnings.classList.add('raised');
-    }
-
-    warnings.innerHTML = Mustache.to_html(
-            dataStore.partials.warningsList,
-            warningsData
-        )
-
-    //fill out table
-    unpacked = parser.unpackAll(payload);
-    keys = Object.keys(unpacked);
-    for(i=0; i<keys.length; i++){
-        if(document.getElementById(keys[i] + 'Parsed')){
-            document.getElementById(keys[i] + 'Parsed').innerHTML = unpacked[keys[i]];
-        }
-    }
-
-
 }

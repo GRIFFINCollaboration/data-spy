@@ -16,26 +16,28 @@
             // GRIFFIN parser testing
             //////////////////////////////////////////////////////
 
-            QUnit.module('core GRIFFIN parser', {
+            data = [
+                0x88A67C80,
+                0xD0850F81,
+                0x1a04FC84,
+                0x73F461FF,
+                0x9D74A998,
+                0xA574A998,
+                0xBC2461FF,
+
+                0xC00000DE,
+                0xC00000AD,
+                0xC00000BE,
+                0xC00000EF,
+
+                0x057715CC,
+                0x0074A998,
+                0xE874A998
+            ];
+
+            QUnit.module('GRIF-16 fragment parser', {
                 "setup": function(){
-                    parser = new GRIFFINparser;
-                    data = [
-                        0x88B67C80,
-                        0x00850F81,
-                        0x56007C84,
-                        0x900461FF,
-                        0xA074A998,
-                        0xB074A998,
-                        0xD00461FF,
-                        0xC57715CC,
-                        0x2074A998,
-                        0x5874A998,
-                        0x2074A998,
-                        0x5874A998,
-                        0x2074A998,
-                        0x5874A998,
-                        0xE0000000
-                    ];
+                    parser = new GRIF16fragmentParser;
                 },
 
                 "teardown": function(){
@@ -47,23 +49,21 @@
                 unpacked = {};
                 parser.parsers['I'](data[0], unpacked);
 
-                assert.equal(unpacked.packetType, 8, 'type I words always begin with packet type == 0x8.');
-                assert.equal(unpacked.pileUpType, '3 hits', '0x88B67C80 has three hits piled up.');
-                assert.equal(unpacked.dataType, 'GRIF-16', '0x88B67C80 is from a GRIF-16.');
-                assert.equal(unpacked.numFilterPatterns, 3, '0x88B67C80 has three filter words.');
-                assert.equal(unpacked.masterChan, 6, '0x88B67C80 is on master channel 8.');
-                assert.equal(unpacked.slaveChan, 7, '0x88B67C80 is on slave channel 7.');
-                assert.equal(unpacked.collectorChan, 200, '0x88B67C80 is on collector channel 200.');
-                assert.equal(unpacked.detType, 'HPGe Low Gain', '0x88B67C80 is from a low gain HPGe detector.')
+                assert.equal(unpacked.typeIpacketType[0], 8);
+                assert.equal(unpacked.moduleType[1], 'GRIF-C Master');
+                assert.equal(unpacked.wordCount, 10);
+                assert.equal(unpacked.masterChan, 6);
+                assert.equal(unpacked.slaveChan, 7);
+                assert.equal(unpacked.collectorChan, 200);
+                assert.equal(unpacked.detType[1], 'HPGe Low Gain')
             });
 
             QUnit.test("typeII", function( assert ){
                 unpacked = {};
                 parser.parsers['II'](data[1], unpacked);
 
-                assert.equal(unpacked.typeIIhead, 0, 'type II head is always 0.');
-                assert.equal(unpacked.masterFilterPatternsPassed, 'Passed filters 1, 3, 8.', '0x00850F81 indicates filters 1, 3 and 8 were passed.');
-                assert.equal(unpacked.PPGpattern, 3969);
+                assert.equal(unpacked.typeIIpacketType[0], 0xd);
+                assert.equal(unpacked.networkPacketCounterValue[0], 0x850F81);
 
             }); 
 
@@ -71,8 +71,11 @@
                 unpacked = {};
                 parser.parsers['III'](data[2], unpacked);
 
-                assert.equal(unpacked.typeIIIhead, 0, 'type III head is always 0.');
-                assert.equal(unpacked.masterFilterID, 1442872452);
+                assert.equal(unpacked.typeIIIhead[0], 0);
+                assert.equal(unpacked.filterPatterns[1], 'Passed filters 3, 10, 12, 13.');
+                assert.equal(unpacked.waveformIndicator[0], 1);
+                assert.equal(unpacked.reserved[0], 996);
+                assert.equal(unpacked.pileupType, 4);
 
             }); 
 
@@ -80,8 +83,8 @@
                 unpacked = {};
                 parser.parsers['IV'](data[3], unpacked);
 
-                assert.equal(unpacked.typeIVPacketType, 9, 'type IV packet type is always 9.');
-                assert.equal(unpacked.channelTriggerID, 287231);
+                assert.equal(unpacked.typeIVhead[0][0], 0);
+                assert.equal(unpacked.filterConditionCounterValue[0][0], 0x73F461FF);
 
             }); 
 
@@ -89,8 +92,8 @@
                 unpacked = {};
                 parser.parsers['V'](data[4], unpacked);
 
-                assert.equal(unpacked.typeVPacketType, 0xA, 'type V packet type is always 0xA.');
-                assert.equal(unpacked.timestampLowBits, 7645592);
+                assert.equal(unpacked.typeVPacketType, 0x9);
+                assert.equal(unpacked.channelTriggerCounterValue, 0xD74A998);
 
             }); 
 
@@ -98,111 +101,65 @@
                 unpacked = {};
                 parser.parsers['VI'](data[5], unpacked);
 
-                assert.equal(unpacked.typeVIPacketType, 0xB, 'type VI packet type is always 0xB.');
-                assert.equal(unpacked.deadtime, '4660 ns', '0xB074A998 corresponds to a deadtime of 466 ns.');
-                assert.equal(unpacked.timestampHighBits, 10648);                
-
-            }); 
-
-            QUnit.test("typeVIa", function( assert ){
-                unpacked = {};
-                parser.parsers['VIa'](data[6], unpacked);
-
-                assert.equal(unpacked.typeVIaPacketType, 0xD, 'type VIa packet type is always 0xD.');
-                assert.equal(unpacked.networkPacketID, 287231);
-
-            }); 
-
-            QUnit.test("typeVIb", function( assert ){
-                unpacked = {};
-                parser.parsers['VIb'](data[7], unpacked);
-
-                assert.equal(unpacked.typeVIbPacketType, 0xC, 'type VIb packet type is always 0xC.');
-                assert.equal(unpacked.waveformSample, 91690444);
-
+                assert.equal(unpacked.typeVIPacketType, 0xA);
+                assert.equal(unpacked.timestampLowBits[0], 0x574A998);
+              
             }); 
 
             QUnit.test("typeVII", function( assert ){
                 unpacked = {};
-                parser.parsers['VII'](data[8], unpacked);
+                parser.parsers['VII'](data[6], unpacked);
 
-                assert.equal(unpacked.typeVIIhead, 0, 'type VII head is always 0.');
-                assert.equal(unpacked.K1upper, 8, '0x2074A998 indicates upper K1 bits corresponding to 01000.');
-                assert.equal(unpacked.K1pulseHeight, 7645592);
+                assert.equal(unpacked.typeVIIPacketType, 0xB);
+                assert.equal(unpacked.deadtime[1], 124330+' ns');
+                assert.equal(unpacked.timestampHighBits[0], 0x21FF)
+              
+            }); 
+
+            QUnit.test("typeVIIa", function( assert ){
+                unpacked = {};
+                parser.parsers['VIIa'](data[7], unpacked);
+
+                assert.equal(unpacked.typeVIIaPacketType, 0xC);
+                assert.equal(unpacked.waveformSample, 0xDE);
 
             }); 
 
             QUnit.test("typeVIII", function( assert ){
                 unpacked = {};
-                parser.parsers['VIII'](data[9], unpacked);
+                parser.parsers['VIII'](data[11], unpacked);
 
-                assert.equal(unpacked.typeVIIIhead, 0, 'type VIII head is always 0.');
-                assert.equal(unpacked.K1lower, 22, '0x5874A998 indicates lower K1 bits corresponding to 10110.');
-                assert.equal(unpacked.K1ampCorrectedTiming, '76455920 ns');
-
+                assert.equal(unpacked.typeVIIIhead[0], 0);
+                assert.equal(unpacked.upperIntLength[0], 1);
+                assert.equal(unpacked.pulseHeight[1], 0x17715CC + ' ADC chan');
+              
             }); 
 
             QUnit.test("typeIX", function( assert ){
                 unpacked = {};
-                parser.parsers['IX'](data[10], unpacked);
+                parser.parsers['IX'](data[12], unpacked);
 
-                assert.equal(unpacked.typeIXhead, 0, 'type IX head is always 0.');
-                assert.equal(unpacked.K2upper, 8, '0x2074A998 indicates upper K2 bits corresponding to 01000.');
-                assert.equal(unpacked.K2pulseHeight, 7645592);
-
+                assert.equal(unpacked.typeIXhead[0], 0);
+                assert.equal(unpacked.lowerIntLength[0], 1);
+                assert.equal(unpacked.CFD[1], 0x34A998*10 + ' ns');
+              
             }); 
 
             QUnit.test("typeX", function( assert ){
                 unpacked = {};
-                parser.parsers['X'](data[11], unpacked);
+                parser.parsers['X'](data[13], unpacked);
 
-                assert.equal(unpacked.typeXhead, 0, 'type X head is always 0.');
-                assert.equal(unpacked.K2lower, 22, '0x5874A998 indicates lower K2 bits corresponding to 10110.');
-                assert.equal(unpacked.K2ampCorrectedTiming, '76455920 ns');
-
-            }); 
-
-            QUnit.test("typeXI", function( assert ){
-                unpacked = {};
-                parser.parsers['XI'](data[12], unpacked);
-
-                assert.equal(unpacked.typeXIhead, 0, 'type XI head is always 0.');
-                assert.equal(unpacked.K3upper, 8, '0x2074A998 indicates upper K3 bits corresponding to 01000.');
-                assert.equal(unpacked.K3pulseHeight, 7645592);
-
-            }); 
-
-            QUnit.test("typeXII", function( assert ){
-                unpacked = {};
-                parser.parsers['XII'](data[13], unpacked);
-
-                assert.equal(unpacked.typeXIIhead, 0, 'type XII head is always 0.');
-                assert.equal(unpacked.K3lower, 22, '0x5874A998 indicates lower K3 bits corresponding to 10110.');
-                assert.equal(unpacked.K3ampCorrectedTiming, '76455920 ns');
-
+                assert.equal(unpacked.typeXpacketType[0], 0xE);
+                assert.equal(unpacked.channelAcceptedCounterValue[0], 8658);
+                assert.equal(unpacked.eventTrailerChannelTriggerCounterValue[0], 10648);
+              
             }); 
 
 
-            QUnit.module('GRIFFIN parser post-processing', {
+
+            QUnit.module('GRIF-16 fragment post-processing', {
                 "setup": function(){
-                    parser = new GRIFFINparser;
-                    data = [
-                        0x88B67C80,
-                        0x00850F81,
-                        0x56007C84,
-                        0x900461FF,
-                        0xA074A998,
-                        0xB074A998,
-                        0xD00461FF,
-                        0xC57715CC,
-                        0x2074A998,
-                        0x5874A998,
-                        0x2074A998,
-                        0x5874A998,
-                        0x2074A998,
-                        0x5874A998,
-                        0xE0000000
-                    ];
+                    parser = new GRIF16fragmentParser;
 
                     unpacked = {};
                     parser.parsers['I'](data[0], unpacked);
@@ -211,15 +168,11 @@
                     parser.parsers['IV'](data[3], unpacked);
                     parser.parsers['V'](data[4], unpacked);
                     parser.parsers['VI'](data[5], unpacked);
-                    parser.parsers['VIa'](data[6], unpacked);
-                    parser.parsers['VIb'](data[7], unpacked);
-                    parser.parsers['VII'](data[8], unpacked);
-                    parser.parsers['VIII'](data[9], unpacked);
-                    parser.parsers['IX'](data[10], unpacked);
-                    parser.parsers['X'](data[11], unpacked);
-                    parser.parsers['XI'](data[12], unpacked);
-                    parser.parsers['XII'](data[13], unpacked);
-                    //parser.parsers['V'](data[4], unpacked);
+                    parser.parsers['VII'](data[6], unpacked);
+                    parser.parsers['VIIa'](data[7], unpacked);
+                    parser.parsers['VIII'](data[11], unpacked);
+                    parser.parsers['IX'](data[12], unpacked);
+                    parser.parsers['X'](data[13], unpacked);
                 },
 
                 "teardown": function(){
@@ -230,38 +183,20 @@
             QUnit.test("timestamp", function ( assert ){
 
                 parser.reconstructTimestamp(unpacked);
-                assert.equal(unpacked.timestamp, 2858308381080);
+                assert.equal(unpacked.timestamp[1], 2.33628530524E+13+' ns');
             });
 
-            QUnit.test("K", function ( assert ){
-                parser.reconstructK(unpacked);
+            QUnit.test("integrationLength", function ( assert ){
 
-                assert.equal(unpacked.K1, 278);
-                assert.equal(unpacked.K2, 278);
-                assert.equal(unpacked.K3, 278);
+                parser.reconstructIntegrationLength(unpacked);
+                assert.equal(unpacked.integrationLength[0], 513);
             });
 
-            QUnit.module('GRIFFIN full chain processing', {
+            QUnit.module('GRIF-16 fragment full chain processing', {
                 "setup": function(){
-                    parser = new GRIFFINparser;
-                    data = [
-                        0x88B67C80,
-                        0x00850F81,
-                        0x56007C84,
-                        0x900461FF,
-                        0xA074A998,
-                        0xB074A998,
-                        0xD00461FF,
-                        0xC57715CC,
-                        0x2074A998,
-                        0x5874A998,
-                        0x2074A998,
-                        0x5874A998,
-                        0x2074A998,
-                        0x5874A998,
-                        0xE0000000
-                    ];
+                    parser = new GRIF16fragmentParser;
 
+                    dataStore = {};
                     unpacked = {};
                     parser.parsers['I'](data[0], unpacked);
                     parser.parsers['II'](data[1], unpacked);
@@ -269,15 +204,11 @@
                     parser.parsers['IV'](data[3], unpacked);
                     parser.parsers['V'](data[4], unpacked);
                     parser.parsers['VI'](data[5], unpacked);
-                    parser.parsers['VIa'](data[6], unpacked);
-                    parser.parsers['VIb'](data[7], unpacked);
-                    parser.parsers['VII'](data[8], unpacked);
-                    parser.parsers['VIII'](data[9], unpacked);
-                    parser.parsers['IX'](data[10], unpacked);
-                    parser.parsers['X'](data[11], unpacked);
-                    parser.parsers['XI'](data[12], unpacked);
-                    parser.parsers['XII'](data[13], unpacked);
-                    //parser.parsers['V'](data[4], unpacked);
+                    parser.parsers['VII'](data[6], unpacked);
+                    parser.parsers['VIIa'](data[7], unpacked);
+                    parser.parsers['VIII'](data[11], unpacked);
+                    parser.parsers['IX'](data[12], unpacked);
+                    parser.parsers['X'](data[13], unpacked);
                 },
 
                 "teardown": function(){
@@ -306,51 +237,71 @@
 
                 //wrong second word
                 buffer = data.slice()
-                buffer[1] = 0xDEADBEEF
+                buffer[1] = 0xBEEFBEEF
                 flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Second word does not start with 00'])
+                assert.deepEqual(flags, ['Second word does not start with 0xD'])
 
                 //wrong third word
                 buffer = data.slice()
                 buffer[2] = 0xDEADBEEF
                 flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Third word does not start with 0'])
+                assert.deepEqual(flags, ['Third word does not start with 00'])
 
                 //wrong fourth word
                 buffer = data.slice()
                 buffer[3] = 0xDEADBEEF
                 flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Fourth word does not start with 0x9'])
+                assert.equal(flags[0], 'Fourth word does not start with 0')
 
-                //wrong fifth word
+                //make sure the right number of type IV words is detected
+                flags = parser.assessComposition(data)
+                assert.equal(dataStore.GRIF16fragmentDetails.nTypeIV, 1)
+
+                //wrong type V identifier
                 buffer = data.slice()
                 buffer[4] = 0xDEADBEEF
                 flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Fifth word does not start with 0xA'])
+                assert.deepEqual(flags, ['Missing type V word or type V word out of sequence'])
 
-                //wrong sixth word
+                //wrong type VI identifier
                 buffer = data.slice()
                 buffer[5] = 0xDEADBEEF
                 flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Sixth word does not start with 0xB'])
+                assert.deepEqual(flags, ['Missing type VI word or type VI word out of sequence'])
 
-                //missing type VIa word OK
+                //wrong type VII identifier
                 buffer = data.slice()
-                buffer.splice(6,1);
+                buffer[6] = 0xDEADBEEF
                 flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, [])
+                assert.deepEqual(flags, ['Missing type VII word or type VII word out of sequence'])
 
-                //bunch of waveform words OK
-                buffer = data.slice()
-                buffer.splice(6,1, [0xC57715CC, 0xC57715CC, 0xC57715CC, 0xC57715CC]);
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, [])                
+                //make sure the right number of type IV words is detected
+                flags = parser.assessComposition(data)
+                assert.equal(dataStore.GRIF16fragmentDetails.nTypeVIIa, 4)
 
-                //missing event trailer
+                //wrong type VIII identifier
                 buffer = data.slice()
-                buffer.splice(-1,1);
+                buffer[11] = 0xDEADBEEF
                 flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Final word does not start with 0xE'])
+                assert.deepEqual(flags, ['Missing type VIII word or type VIII word out of sequence'])
+
+                //wrong type IX identifier
+                buffer = data.slice()
+                buffer[12] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Missing type IX word or type IX word out of sequence'])
+
+                //wrong type X identifier
+                buffer = data.slice()
+                buffer[13] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Missing type X word or type X word out of sequence'])
+
+                //junk at the end
+                buffer = data.slice()
+                buffer[14] = 0xDEADBEEF
+                flags = parser.assessComposition(buffer)
+                assert.deepEqual(flags, ['Type X word not the final word in the event'])
 
             });
 

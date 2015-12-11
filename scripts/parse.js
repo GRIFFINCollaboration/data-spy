@@ -93,10 +93,10 @@ GRIF16fragmentParser = function(){
         var patternsPassed, i;
 
         //slice up word
-        unpacked['typeIIIhead']       = [(word & 0xC0000000) >>> 32];
+        unpacked['typeIIIhead']       = [(word & 0xC0000000) >>> 30];
         unpacked['filterPatterns']    = [(word & 0x3FFF0000) >>> 16];
         unpacked['waveformIndicator'] = [(word & 0x00008000) >>> 15];
-        unpacked['reserved']          = [(word & 0x0001FFE0) >>> 5];
+        unpacked['reserved']          = [(word & 0x00007FE0) >>> 5];
         unpacked['pileupType']        = [(word & 0x0000001F) >>> 0];
 
         //decode resuls where necessary:
@@ -220,7 +220,7 @@ GRIF16fragmentParser = function(){
         //slice up word
         unpacked['typeXpacketType']                        = [(word & 0xF0000000) >>> 28];
         unpacked['channelAcceptedCounterValue']            = [(word & 0x0FFFC000) >>> 14];
-        unpacked['eventTrailerChannelTriggerCounterValue'] = [(word & 0x003FFFFF) >>> 0];
+        unpacked['eventTrailerChannelTriggerCounterValue'] = [(word & 0x00003FFF) >>> 0];
 
     }.bind(this);
 
@@ -234,7 +234,7 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
         //recombine the timestamp from its fragments
 
-        unpacked.timestamp    = [(unpacked.timestampHighBits[0] * Math.pow(2, 28)) + unpacked.timestampLowBits]; //yes, adding - ok since bitshift, gets around JS sigining.
+        unpacked.timestamp    = [(unpacked.timestampHighBits[0] * Math.pow(2, 28)) + unpacked.timestampLowBits[0]]; //yes, adding - ok since bitshift, gets around JS sigining.
         unpacked.timestamp[1] = unpacked.timestamp[0]*10 + ' ns' 
     }
 
@@ -242,7 +242,7 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
         //recombine the integration lengths from its fragments
 
-        unpacked.integrationLength = [(unpacked.upperIntLength[0] * Math.pow(2, 9)) + unpacked.lowerIntLength]; //yes, adding - ok since bitshift, gets around JS sigining.
+        unpacked.integrationLength = [(unpacked.upperIntLength[0] * Math.pow(2, 9)) + unpacked.lowerIntLength[0]]; //yes, adding - ok since bitshift, gets around JS sigining.
     }
 
     /////////////////////

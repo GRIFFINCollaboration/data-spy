@@ -57,8 +57,14 @@ GRIF16fragmentParser = function(){
         //module type
         if(unpacked['moduleType'][0] < this.moduleType.length)
             unpacked['moduleType'][1] = this.moduleType[unpacked['moduleType'][0]];
-        else
+        else{
             unpacked['moduleType'][1] = 'Invalid module code, found ' + unpacked['moduleType'][0];
+            dataStore.GRIF16fragmentWordFlags['moduleType'] = 'Invalid module code, found ' + unpacked['moduleType'][0];
+        }
+
+        //word count
+        if(unpacked['wordCount'][0] != dataStore.GRIF16fragmentDetails.nTokens)
+            dataStore.GRIF16fragmentWordFlags['wordCount'] = 'Mismatch between number of words found (' + dataStore.GRIF16fragmentDetails.nTokens + ') and number of words reported in the header (' + unpacked['wordCount'][0] + ')'
 
         //address
         unpacked['masterChan']     = [(unpacked['address'] & 0xF000) >>> 12];
@@ -69,8 +75,10 @@ GRIF16fragmentParser = function(){
         //detector type
         if(unpacked['detType'][0] < this.detectorType.length)
             unpacked['detType'][1] = this.detectorType[unpacked['detType'][0]];
-        else
+        else{
             unpacked['detType'][1] = 'Invalid detector code, found ' + unpacked['detType'][0];
+            dataStore.GRIF16fragmentWordFlags['detType'] = 'Invalid detector code, found ' + unpacked['detType'][0];
+        }
 
     }.bind(this);
 
@@ -224,8 +232,6 @@ GRIF16fragmentParser = function(){
 
     }.bind(this);
 
-
-
     ///////////////////////
     // post-processing
     ///////////////////////
@@ -245,6 +251,18 @@ GRIF16fragmentParser = function(){
         unpacked.integrationLength = [(unpacked.upperIntLength[0] * Math.pow(2, 9)) + unpacked.lowerIntLength[0]]; //yes, adding - ok since bitshift, gets around JS sigining.
     }
 
+    this.postProcessingFlags = function(unpacked){
+        //<unpacked>: object; a key-value store for holding the unpacked results
+        //final check for inconsistencies after all unpacking complete.
+
+        //is waveform flag correct?
+        if(unpacked['waveformIndicator'] == 1 && dataStore.GRIF16fragmentDetails.nTypeVIIa == 0)
+            dataStore.GRIF16fragmentWordFlags['waveformIndicator'] = 'Waveform indicator bit set but no waveform samples found.';
+        else if(unpacked['waveformIndicator'] == 0 && dataStore.GRIF16fragmentDetails.nTypeVIIa > 0)
+            dataStore.GRIF16fragmentWordFlags['waveformIndicator'] = 'Waveform indicator bit unset but ' + dataStore.GRIF16fragmentDetails.nTypeVIIa + ' waveform samples found.';
+
+    }
+
     /////////////////////
     // full chain
     /////////////////////
@@ -254,31 +272,32 @@ GRIF16fragmentParser = function(){
         //check that the types and configurations of words make sense.
         //return an array, empty if all good, containing strings describing mistakes otherwise.
 
-        var flags = [],
-            nTypeIV = 0,
+        var nTypeIV = 0,
             nTypeVIIa = 0;
-            
+           
+        dataStore.GRIF16fragmentCompositionalFlags = [];
+
         //must have at least 10 words
         if(words.length < 10){
-            flags.push('Not enough words to make an event.')
-            return flags;
+            dataStore.GRIF16fragmentCompositionalFlags.push('Not enough words to make an event.')
+            return;
         }
 
         //first word must start with 0x8
         if( (words[0] & 0xF0000000) >>> 28 != 8 )
-            flags.push('First word does not start with 0x8');
+            dataStore.GRIF16fragmentCompositionalFlags.push('First word does not start with 0x8');
 
         //second word must start with 0xD
         if( (words[1] & 0xF0000000) >>> 28 != 0xD )
-            flags.push('Second word does not start with 0xD');
+            dataStore.GRIF16fragmentCompositionalFlags.push('Second word does not start with 0xD');
 
         //third word must start with 00
         if( (words[2] & 0xC0000000) >>> 30 != 0 )
-            flags.push('Third word does not start with 00');
+            dataStore.GRIF16fragmentCompositionalFlags.push('Third word does not start with 00');
 
         //fourth word must start with 0
         if( (words[3] & 0x80000000) >>> 31 != 0 )
-            flags.push('Fourth word does not start with 0'); 
+            dataStore.GRIF16fragmentCompositionalFlags.push('Fourth word does not start with 0'); 
 
         //allow a run of type IV words:
         while ( (words[3+nTypeIV] & 0x80000000) >>> 31 == 0 )
@@ -286,15 +305,15 @@ GRIF16fragmentParser = function(){
 
         //type V must start with 0x9
         if( (words[3+nTypeIV] & 0xF0000000) >>> 28 != 0x9 )
-            flags.push('Missing type V word or type V word out of sequence');
+            dataStore.GRIF16fragmentCompositionalFlags.push('Missing type V word or type V word out of sequence');
 
         //type VI must start with 0xA
         if( (words[3+nTypeIV+1] & 0xF0000000) >>> 28 != 0xA )
-            flags.push('Missing type VI word or type VI word out of sequence');
+            dataStore.GRIF16fragmentCompositionalFlags.push('Missing type VI word or type VI word out of sequence');
 
         //type VII must start with 0xB
         if( (words[3+nTypeIV+2] & 0xF0000000) >>> 28 != 0xB )
-            flags.push('Missing type VII word or type VII word out of sequence');
+            dataStore.GRIF16fragmentCompositionalFlags.push('Missing type VII word or type VII word out of sequence');
 
         //allow a run of type VIIa words
         while ( (words[3+nTypeIV+3+nTypeVIIa] & 0xF0000000) >>> 28 == 0xC )
@@ -302,26 +321,25 @@ GRIF16fragmentParser = function(){
 
         //type VIII must start with 0
         if( (words[3+nTypeIV+3+nTypeVIIa] & 0x80000000) >>> 31 != 0 )
-            flags.push('Missing type VIII word or type VIII word out of sequence'); 
+            dataStore.GRIF16fragmentCompositionalFlags.push('Missing type VIII word or type VIII word out of sequence'); 
 
         //type IX must start with 0
         if( (words[3+nTypeIV+3+nTypeVIIa+1] & 0x80000000) >>> 31 != 0 )
-            flags.push('Missing type IX word or type IX word out of sequence'); 
+            dataStore.GRIF16fragmentCompositionalFlags.push('Missing type IX word or type IX word out of sequence'); 
 
         //type X must start with 0xE
         if( (words[3+nTypeIV+3+nTypeVIIa+2] & 0xF0000000) >>> 28 != 0xE )
-            flags.push('Missing type X word or type X word out of sequence');
+            dataStore.GRIF16fragmentCompositionalFlags.push('Missing type X word or type X word out of sequence');
 
         //type X word must be last word in event
         if(3+nTypeIV+3+nTypeVIIa+2 != words.length-1)
-            flags.push('Type X word not the final word in the event')
+            dataStore.GRIF16fragmentCompositionalFlags.push('Type X word not the final word in the event')
 
         dataStore.GRIF16fragmentDetails = {
             'nTypeIV': nTypeIV,
-            'nTypeVIIa': nTypeVIIa
+            'nTypeVIIa': nTypeVIIa,
+            'nTokens': words.length - nTypeVIIa
         }
-
-        return flags;
     }
 
     this.unpackAll = function(words){

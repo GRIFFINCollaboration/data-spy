@@ -247,11 +247,33 @@ function parseGRIF16fragment(payload){
         flags, unpacked,
         warnings = document.getElementById('warningsDiv'),
         warningsData = {},
-        keys;
+        i, keys;
 
-    //assess & report composition of event
-    flags = parser.assessComposition(payload);
+    //assess composition of event
+    parser.assessComposition(payload);
 
+    //fill out table
+    unpacked = parser.unpackAll(payload);
+    keys = Object.keys(unpacked);
+    for(i=0; i<keys.length; i++){
+        if(document.getElementById(keys[i] + 'Parsed')){
+            document.getElementById(keys[i] + 'Hex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+            document.getElementById(keys[i] + 'Parsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+        }
+    }
+
+    //post-processing flags
+    parser.postProcessingFlags(unpacked);
+
+    //assemble flags and highlight problematic table entries
+    flags = dataStore.GRIF16fragmentCompositionalFlags;
+    keys = Object.keys(dataStore.GRIF16fragmentWordFlags)
+    for(i=0; i<keys.length; i++){
+        flags = flags.concat(dataStore.GRIF16fragmentWordFlags[keys[i]]);
+        document.getElementById(keys[i]).parentNode.setAttribute('style', 'background-color: #FF0000');
+    }
+
+    //raise warnings as necessary
     if(flags.length == 0){
         warningsData.good = true;
         warnings.classList.remove('raised');
@@ -269,16 +291,6 @@ function parseGRIF16fragment(payload){
             warningsData
         )
 
-    //fill out table
-    unpacked = parser.unpackAll(payload);
-    keys = Object.keys(unpacked);
-    for(i=0; i<keys.length; i++){
-        if(document.getElementById(keys[i] + 'Parsed')){
-            document.getElementById(keys[i] + 'Hex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
-            document.getElementById(keys[i] + 'Parsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
-        }
-    }
-
     //report reconstructed values
     document.getElementById('grif16fragmentTimestamp').innerHTML = 'Timestamp: ' + unpacked.timestamp[1];
     document.getElementById('grif16fragmentIntegrationLength').innerHTML = 'Integration Length: ' + unpacked.integrationLength[0];
@@ -286,7 +298,12 @@ function parseGRIF16fragment(payload){
     //generate waveform plot if needed:
     if(dataStore.GRIF16fragmentDetails.nTypeVIIa > 0){
         plotWaveform(unpacked['waveformSample']);
+    } else {
+        document.getElementById('grif16waveformWrap').classList.add('hidden');
     }
+
+    //report raw event
+    listRawEvent('rawGRIF16fragment',  payload)
 }
 
 function plotWaveform(wvfrm){
@@ -295,20 +312,25 @@ function plotWaveform(wvfrm){
     var data,
         layout = {
             xaxis:{
-                zerolinecolor: '#000000',
-                gridcolor: '#000000',
+                zerolinecolor: '#999999',
+                gridcolor: '#999999',
                 tickfont:{
-                    color: '#000000'
+                    color: '#999999'
                 }
             },
             yaxis:{
                 title: 'Waveform',
-                zerolinecolor: '#000000',
-                gridcolor: '#000000',
+                zerolinecolor: '#999999',
+                gridcolor: '#999999',
                 tickfont:{
-                    color: '#000000'
+                    color: '#999999'
+                },
+                titlefont:{
+                    color: '#999999'
                 }
             },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)'
         }
 
     //construct the plotly data object
@@ -326,6 +348,34 @@ function plotWaveform(wvfrm){
 //////////////////
 // helpers
 //////////////////
+
+function listRawEvent(listID, words){
+    //generate the html for listing a raw event
+
+    var i,
+        list = document.getElementById(listID),
+        item;
+
+    for(i=0; i<words.length; i++){
+        item = document.createElement('li')
+        item.innerHTML = '0x'+alwaysThisLong(words[i].toString(16),8);
+        list.appendChild(item);
+    }
+}
+
+function alwaysThisLong(str, length){
+    //pad string with leading 0's to make it the requested length
+
+    var pad = length - str.length,
+        i, 
+        padded = str;
+
+    for(i=0; i<pad; i++){
+        padded = '0' + padded
+    }
+
+    return padded;
+}
 
 function manageView(viewID){
     //show this event type and hide the previous

@@ -40,17 +40,25 @@
             <div class='col-md-4 col-md-offset-2' id='leftG16fragment'></div>
             <div class='col-md-4' id='rightG16fragment'></div>
             <div class='sectionWrapper'>
-                <div class='col-md-4 col-md-offset-2 box'>
-                    <h2>Reconstructed Values</h2>
-                    <ul>
-                        <li id='grif16fragmentTimestamp'></li>
-                        <li id='grif16fragmentIntegrationLength'></li>
-                    </ul>
+                <div class='col-md-4 col-md-offset-2'>
+                    <div class='box'>
+                        <h2>Reconstructed Values</h2>
+                        <ul>
+                            <li id='grif16fragmentTimestamp'></li>
+                            <li id='grif16fragmentIntegrationLength'></li>
+                        </ul>
+                    </div>
+
+                    <div class='box'>
+                        <h2>Raw Event</h2>
+                        <ul class='raw' id='rawGRIF16fragment'></ul>
+                    </div>
                 </div>
-                <div class='col-md-4' id='waveformWrap'>
+                <div class='col-md-4 box' id='grif16waveformWrap'>
+                    <h2>GRIF-16 Fragment Waveform</h2>
                     <div id='waveformPlot'></div>
                 </div>
-            </siv>
+            </div>
 
         </div>
         <div id='G16scalar' class='hidden'>
@@ -106,7 +114,8 @@
                     'warningsList'
                 ]
             dataStore = {
-                'currentViewID': 'G16fragment'
+                'currentViewID': 'G16fragment',
+                'GRIF16fragmentWordFlags' : {}
             };
 
             //fetch the templates, then set up html, then fetch data from the ODB, then parse it and sort it into the table
@@ -151,7 +160,7 @@
                         //testing implementation until events are available in odb
                         var testingData = {
                             'grif16fragment': [
-                                0x88A67C80,
+                                0x8EA67C80,
                                 0xD0850F81,
                                 0x1a047C84,
                                 0x000461FF,
@@ -159,10 +168,10 @@
                                 0xA074A998,
                                 0xB00461FF,
 
-                                0xC00000DE,
-                                0xC00000AD,
-                                0xC00000BE,
-                                0xC00000EF,
+                                0xC0000001,
+                                0xC0000002,
+                                0xC0000003,
+                                0xC0000004,
 
                                 0x057715CC,
                                 0x0074A998,

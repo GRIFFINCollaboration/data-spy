@@ -38,6 +38,14 @@
             QUnit.module('GRIF-16 fragment parser', {
                 "setup": function(){
                     parser = new GRIF16fragmentParser;
+
+                    dataStore = {
+                        'currentViewID': 'G16fragment',
+                        'GRIF16fragmentWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(data);
                 },
 
                 "teardown": function(){
@@ -161,6 +169,14 @@
                 "setup": function(){
                     parser = new GRIF16fragmentParser;
 
+                    dataStore = {
+                        'currentViewID': 'G16fragment',
+                        'GRIF16fragmentWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(data);
+
                     unpacked = {};
                     parser.parsers['I'](data[0], unpacked);
                     parser.parsers['II'](data[1], unpacked);
@@ -196,7 +212,14 @@
                 "setup": function(){
                     parser = new GRIF16fragmentParser;
 
-                    dataStore = {};
+                    dataStore = {
+                        'currentViewID': 'G16fragment',
+                        'GRIF16fragmentWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(data);
+
                     unpacked = {};
                     parser.parsers['I'](data[0], unpacked);
                     parser.parsers['II'](data[1], unpacked);
@@ -222,86 +245,86 @@
                     buffer;
 
                 //nominally correct
-                assert.deepEqual(flags, []);
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, []);
 
                 //not enough words
                 buffer = data.slice(1,2)
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Not enough words to make an event.'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Not enough words to make an event.'])
 
                 //wrong first word
                 buffer = data.slice()
                 buffer[0] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['First word does not start with 0x8'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['First word does not start with 0x8'])
 
                 //wrong second word
                 buffer = data.slice()
                 buffer[1] = 0xBEEFBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Second word does not start with 0xD'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Second word does not start with 0xD'])
 
                 //wrong third word
                 buffer = data.slice()
                 buffer[2] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Third word does not start with 00'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Third word does not start with 00'])
 
                 //wrong fourth word
                 buffer = data.slice()
                 buffer[3] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.equal(flags[0], 'Fourth word does not start with 0')
+                parser.assessComposition(buffer)
+                assert.equal(dataStore.GRIF16fragmentCompositionalFlags[0], 'Fourth word does not start with 0')
 
                 //make sure the right number of type IV words is detected
-                flags = parser.assessComposition(data)
+                parser.assessComposition(data)
                 assert.equal(dataStore.GRIF16fragmentDetails.nTypeIV, 1)
 
                 //wrong type V identifier
                 buffer = data.slice()
                 buffer[4] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Missing type V word or type V word out of sequence'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Missing type V word or type V word out of sequence'])
 
                 //wrong type VI identifier
                 buffer = data.slice()
                 buffer[5] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Missing type VI word or type VI word out of sequence'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Missing type VI word or type VI word out of sequence'])
 
                 //wrong type VII identifier
                 buffer = data.slice()
                 buffer[6] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Missing type VII word or type VII word out of sequence'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Missing type VII word or type VII word out of sequence'])
 
                 //make sure the right number of type IV words is detected
-                flags = parser.assessComposition(data)
+                parser.assessComposition(data)
                 assert.equal(dataStore.GRIF16fragmentDetails.nTypeVIIa, 4)
 
                 //wrong type VIII identifier
                 buffer = data.slice()
                 buffer[11] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Missing type VIII word or type VIII word out of sequence'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Missing type VIII word or type VIII word out of sequence'])
 
                 //wrong type IX identifier
                 buffer = data.slice()
                 buffer[12] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Missing type IX word or type IX word out of sequence'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Missing type IX word or type IX word out of sequence'])
 
                 //wrong type X identifier
                 buffer = data.slice()
                 buffer[13] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Missing type X word or type X word out of sequence'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Missing type X word or type X word out of sequence'])
 
                 //junk at the end
                 buffer = data.slice()
                 buffer[14] = 0xDEADBEEF
-                flags = parser.assessComposition(buffer)
-                assert.deepEqual(flags, ['Type X word not the final word in the event'])
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Type X word not the final word in the event'])
 
             });
 

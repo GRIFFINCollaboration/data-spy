@@ -90,14 +90,14 @@ tr.wordHeader{
     border-radius: 10px;
 }
 
-/*figures*/
-
-div#waveformWrap{
-    margin-bottom: 1em;
+ul.raw{
+    list-style: none;
+    font-family: monospace;
 }
 
 /*references*/
 
 div#references{
     background-color: #222222;
+    margin-top: 1em;
 }

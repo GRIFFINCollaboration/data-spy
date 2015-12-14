@@ -228,6 +228,266 @@ function defineGRIF16fragmentTableStructure(){
 
 }
 
+function defineGRIF4GfragmentTableStructure(){
+    //returns an array describing the table sections and entries, for use by the templater.
+
+    var words = [];
+
+    //define words + items for templating
+    words[0] = {
+        "label": 'I',
+        "members": [
+            {
+                'id': 'typeIpacketType',
+                'title': 'Type I Packet Type'
+            },
+
+            {
+                'id': 'moduleType',
+                'title': 'Module Type'
+            },
+
+            {
+                'id': 'wordCount',
+                'title': 'Word Count'
+            },
+
+            {
+                'id': 'address',
+                'title': 'Address'
+            },
+
+            {
+                'id': 'detType',
+                'title': 'Detector Type'
+            }
+        ]
+    }
+
+    words[1] = {
+        "label": 'II',
+        "members": [
+            {
+                'id': 'typeIIpacketType',
+                'title': 'Type II Packet Type'
+            },
+
+            {
+                'id': 'networkPacketCounterValue',
+                'title': 'Network Packet Counter Value'
+            }
+        ]
+    }
+
+    words[2] = {
+        "label": 'III',
+        "members": [
+            {
+                'id': 'typeIIIhead',
+                'title': 'Type III Packet Label'
+            },
+
+            {
+                'id': 'filterPatterns',
+                'title': 'Filter Patterns'
+            },
+
+            {
+                'id': 'waveformIndicator',
+                'title': 'Waveform Indicator'
+            },
+
+            {
+                'id': 'reserved',
+                'title': 'Reserved Bits'
+            }
+        ]
+    }
+
+    words[3] = {
+        "label": 'IV',
+        "members": [
+            {
+                'id': 'typeIVhead',
+                'title': 'Type IV Packet Label'
+            },
+
+            {
+                'id': 'filterConditionCounterValue',
+                'title': 'Filter Condition Counter Value'
+            }
+        ]
+    }
+
+    words[4] = {
+        "label": 'V',
+        "members": [
+            {
+                'id': 'typeVPacketType',
+                'title': 'Type V Packet Type'
+            },
+
+            {
+                'id': 'channelTriggerCounterValue',
+                'title': 'Channel Trigger Counter Value'
+            }
+        ]
+    }
+
+    words[5] = {
+        "label": 'VI',
+        "members": [
+            {
+                'id': 'typeVIPacketType',
+                'title': 'Type VI Packet Type'
+            },
+
+            {
+                'id': 'timestampLowBits',
+                'title': 'Timestamp Low Bits'
+            }
+        ]
+    }
+
+    words[6] = {
+        "label": 'VII',
+        "members": [
+            {
+                'id': 'typeVIIPacketType',
+                'title': 'Type VII Packet Type'
+            },
+
+            {
+                'id': 'deadtime',
+                'title': 'Deadtime'
+            },
+
+            {
+                'id': 'timestampHighBits',
+                'title': 'Timestamp High Bits'
+            }
+        ]
+    }
+
+    // words[7] = {
+    //     "label": 'VIIa',
+    //     "members": [
+    //         {
+    //             'id': 'typeVIIaPacketType',
+    //             'title': 'Type VIIa Packet Type'
+    //         },
+
+    //         {
+    //             'id': 'waveformSample',
+    //             'title': 'Waveform Sample'
+    //         }
+    //     ]
+    // }
+
+    words[7] = {
+        "label": 'VIII',
+        "members": [
+            {
+                'id': 'typeVIIIhead',
+                'title': 'Type VIII Packet Label'
+            },
+
+            {
+                'id': 'upperIntLength',
+                'title': 'Upper Integration Length'
+            },
+
+            {
+                'id': 'pulseHeight',
+                'title': 'Pulse Height'
+            }
+        ]
+    }
+
+    words[8] = {
+        "label": 'IX',
+        "members": [
+            {
+                'id': 'typeIXhead',
+                'title': 'Type IX Packet Label'
+            },
+
+            {
+                'id': 'lowerIntLength',
+                'title': 'Lower Integration Length'
+            },
+
+            {
+                'id': 'CFD',
+                'title': 'CFD'
+            }
+        ]
+    }
+
+    words[9] = {
+        "label": 'X',
+        "members": [
+            {
+                'id': 'typeXhead',
+                'title': 'Type X Packet Label'
+            },
+
+            {
+                'id': 'upperLongIntLength',
+                'title': 'Upper Long Integration Length'
+            },
+
+            {
+                'id': 'shortChargeIntegration',
+                'title': 'Short Charge Integration'
+            }
+        ]
+    }
+
+    words[10] = {
+        "label": 'XI',
+        "members": [
+            {
+                'id': 'typeXIhead',
+                'title': 'Type XI Packet Label'
+            },
+
+            {
+                'id': 'lowerLongIntLength',
+                'title': 'Lower Long Integration Length'
+            },
+
+            {
+                'id': 'zeroCrossingTime',
+                'title': 'Zero-Crossing Time'
+            }
+        ]
+    }
+
+    words[11] = {
+        "label": 'XII',
+        "members": [
+            {
+                'id': 'typeXIIpacketType',
+                'title': 'Type XII Packet Type'
+            },
+
+            {
+                'id': 'channelAcceptedCounterValue',
+                'title': 'Channel Accepted Counter Value'
+            },
+
+            {
+                'id': 'eventTrailerChannelTriggerCounterValue',
+                'title': 'Repeat Channel Trigger Counter Value Low Bits'
+            }
+        ]
+    }
+
+    return words
+
+}
+
 ///////////////////////////
 // parsing handlers
 ///////////////////////////
@@ -237,7 +497,7 @@ function parseODB(payload){
 
     parseGRIF16fragment(payload[0]);
     //parseGRIF16scalar(payload[0]);
-    //parseGRIF4Gfragment(payload[0]);
+    parseGRIF4Gfragment(payload[2]);
     //parsePPG(payload[0]);
 }
 
@@ -297,7 +557,7 @@ function parseGRIF16fragment(payload){
 
     //generate waveform plot if needed:
     if(dataStore.GRIF16fragmentDetails.nTypeVIIa > 0){
-        plotWaveform(unpacked['waveformSample']);
+        plotWaveform(unpacked['waveformSample'], 'waveformPlot');
     } else {
         document.getElementById('grif16waveformWrap').classList.add('hidden');
     }
@@ -306,10 +566,77 @@ function parseGRIF16fragment(payload){
     listRawEvent('rawGRIF16fragment',  payload)
 }
 
-function plotWaveform(wvfrm){
+function parseGRIF4Gfragment(payload){
+    
+    var parser = new GRIF4GfragmentParser,
+        flags, unpacked,
+        warnings = document.getElementById('warningsDiv4G'),
+        warningsData = {},
+        i, keys;
+
+    //assess composition of event
+    parser.assessComposition(payload);
+
+    //fill out table
+    unpacked = parser.unpackAll(payload);
+    keys = Object.keys(unpacked);
+    for(i=0; i<keys.length; i++){
+        if(document.getElementById(keys[i] + '4GParsed')){
+            document.getElementById(keys[i] + '4GHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+            document.getElementById(keys[i] + '4GParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+        }
+    }
+
+    //post-processing flags
+    parser.postProcessingFlags(unpacked);
+
+    //assemble flags and highlight problematic table entries
+    flags = dataStore.GRIF4GfragmentCompositionalFlags;
+    keys = Object.keys(dataStore.GRIF4GfragmentWordFlags)
+    for(i=0; i<keys.length; i++){
+        flags = flags.concat(dataStore.GRIF4GfragmentWordFlags[keys[i]]);
+        document.getElementById(keys[i]+'4G').parentNode.setAttribute('style', 'background-color: #FF0000');
+    }
+
+    //raise warnings as necessary
+    if(flags.length == 0){
+        warningsData.good = true;
+        warnings.classList.remove('raised');
+        warnings.classList.add('ok');
+    } else {
+        warningsData.bad = {
+            "warnings" : flags
+        }
+        warnings.classList.remove('ok');
+        warnings.classList.add('raised');
+    }
+
+    warnings.innerHTML = Mustache.to_html(
+            dataStore.partials.warningsList,
+            warningsData
+        )
+
+    //report reconstructed values
+    document.getElementById('grif4GfragmentTimestamp').innerHTML = 'Timestamp: ' + unpacked.timestamp[1];
+    document.getElementById('grif4GfragmentIntegrationLength').innerHTML = 'Integration Length: ' + unpacked.integrationLength[0];
+    document.getElementById('grif4GfragmentLongIntegrationLength').innerHTML = 'Long Integration Length: ' + unpacked.longIntegrationLength[0];
+
+    //generate waveform plot if needed:
+    if(dataStore.GRIF4GfragmentDetails.nTypeVIIa > 0){
+        plotWaveform(unpacked['waveformSample'], 'waveformPlot4G');
+    } else {
+        document.getElementById('grif4GwaveformWrap').classList.add('hidden');
+    }
+
+    //report raw event
+    listRawEvent('rawGRIF4Gfragment',  payload)
+}
+
+function plotWaveform(wvfrm, divID){
     //plot the reported waveform, described by array of values <wvfrm>.
 
     var data,
+        dim = document.getElementById('waveformPlot').offsetWidth;
         layout = {
             xaxis:{
                 zerolinecolor: '#999999',
@@ -330,7 +657,10 @@ function plotWaveform(wvfrm){
                 }
             },
             paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)'
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            autosize: false,
+            width: dim,
+            height: dim
         }
 
     //construct the plotly data object
@@ -341,7 +671,7 @@ function plotWaveform(wvfrm){
         }
     ]
     
-    Plotly.newPlot('waveformPlot', data, layout);    
+    Plotly.newPlot(divID, data, layout);    
 }
 
 

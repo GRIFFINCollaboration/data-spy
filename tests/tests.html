@@ -9,12 +9,14 @@
         <div id="qunit"></div>
         <div id="qunit-fixture"></div>
         <script src="../scripts/qunit.js"></script>
-        <script src='../scripts/parse.js' type="text/javascript"></script>
+        <script src='../scripts/GRIF16-fragment-parse.js' type="text/javascript"></script>
+        <script src='../scripts/GRIF4G-fragment-parse.js' type="text/javascript"></script>
 
         <script>
-            //////////////////////////////////////////////////////
-            // GRIFFIN parser testing
-            //////////////////////////////////////////////////////
+
+            //////////////////////////////////
+            // GRIF-16 fragment
+            //////////////////////////////////
 
             data = [
                 0x88A67C80,
@@ -298,7 +300,7 @@
                 parser.assessComposition(buffer)
                 assert.deepEqual(dataStore.GRIF16fragmentCompositionalFlags, ['Missing type VII word or type VII word out of sequence'])
 
-                //make sure the right number of type IV words is detected
+                //make sure the right number of type VIIa words is detected
                 parser.assessComposition(data)
                 assert.equal(dataStore.GRIF16fragmentDetails.nTypeVIIa, 4)
 
@@ -328,6 +330,353 @@
 
             });
 
+            ///////////////////////////
+            //4G fragment
+            ///////////////////////////
+
+            GRIF4Gdata = [
+                0x88A67C80,
+                0xD0850F81,
+                0x1a04FC84,
+                0x73F461FF,
+                0x9D74A998,
+                0xA574A998,
+                0xBC2461FF,
+
+                0xC00000DE,
+                0xC00000AD,
+                0xC00000BE,
+                0xC00000EF,
+
+                0x057715CC,
+                0x7F74A998,
+                0x057715CC,
+                0x7F74A998,
+                0xE874A998
+            ];
+
+            QUnit.module('GRIF-4G fragment parser', {
+                "setup": function(){
+                    parser = new GRIF4GfragmentParser;
+
+                    dataStore = {
+                        'currentViewID': 'G4Gfragment',
+                        'GRIF4GfragmentWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(GRIF4Gdata);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("typeI", function( assert ) {
+                unpacked = {};
+                parser.parsers['I'](GRIF4Gdata[0], unpacked);
+
+                assert.equal(unpacked.typeIpacketType[0], 8);
+                assert.equal(unpacked.moduleType[1], 'GRIF-C Master');
+                assert.equal(unpacked.wordCount, 10);
+                assert.equal(unpacked.masterChan, 6);
+                assert.equal(unpacked.slaveChan, 7);
+                assert.equal(unpacked.collectorChan, 200);
+                assert.equal(unpacked.detType[1], 'HPGe Low Gain')
+            });
+
+            QUnit.test("typeII", function( assert ){
+                unpacked = {};
+                parser.parsers['II'](GRIF4Gdata[1], unpacked);
+
+                assert.equal(unpacked.typeIIpacketType[0], 0xd);
+                assert.equal(unpacked.networkPacketCounterValue[0], 0x850F81);
+
+            }); 
+
+            QUnit.test("typeIII", function( assert ){
+                unpacked = {};
+                parser.parsers['III'](GRIF4Gdata[2], unpacked);
+
+                assert.equal(unpacked.typeIIIhead[0], 0);
+                assert.equal(unpacked.filterPatterns[1], 'Passed filters 3, 10, 12, 13.');
+                assert.equal(unpacked.waveformIndicator[0], 1);
+                assert.equal(unpacked.reserved[0], 0x7C84);
+
+            }); 
+
+            QUnit.test("typeIV", function( assert ){
+                unpacked = {};
+                parser.parsers['IV'](GRIF4Gdata[3], unpacked);
+
+                assert.equal(unpacked.typeIVhead[0][0], 0);
+                assert.equal(unpacked.filterConditionCounterValue[0][0], 0x73F461FF);
+
+            }); 
+
+            QUnit.test("typeV", function( assert ){
+                unpacked = {};
+                parser.parsers['V'](GRIF4Gdata[4], unpacked);
+
+                assert.equal(unpacked.typeVPacketType, 0x9);
+                assert.equal(unpacked.channelTriggerCounterValue, 0xD74A998);
+
+            }); 
+
+            QUnit.test("typeVI", function( assert ){
+                unpacked = {};
+                parser.parsers['VI'](GRIF4Gdata[5], unpacked);
+
+                assert.equal(unpacked.typeVIPacketType, 0xA);
+                assert.equal(unpacked.timestampLowBits[0], 0x574A998);
+              
+            }); 
+
+            QUnit.test("typeVII", function( assert ){
+                unpacked = {};
+                parser.parsers['VII'](GRIF4Gdata[6], unpacked);
+
+                assert.equal(unpacked.typeVIIPacketType, 0xB);
+                assert.equal(unpacked.deadtime[1], 124330+' ns');
+                assert.equal(unpacked.timestampHighBits[0], 0x21FF)
+              
+            }); 
+
+            QUnit.test("typeVIIa", function( assert ){
+                unpacked = {};
+                parser.parsers['VIIa'](GRIF4Gdata[7], unpacked);
+
+                assert.equal(unpacked.typeVIIaPacketType, 0xC);
+                assert.equal(unpacked.waveformSample, 0xDE);
+
+            }); 
+
+            QUnit.test("typeVIII", function( assert ){
+                unpacked = {};
+                parser.parsers['VIII'](GRIF4Gdata[11], unpacked);
+
+                assert.equal(unpacked.typeVIIIhead[0], 0);
+                assert.equal(unpacked.upperIntLength[0], 1);
+                assert.equal(unpacked.pulseHeight[1], 0x17715CC + ' ADC chan');
+              
+            }); 
+
+            QUnit.test("typeIX", function( assert ){
+                unpacked = {};
+                parser.parsers['IX'](GRIF4Gdata[12], unpacked);
+
+                assert.equal(unpacked.typeIXhead[0], 0);
+                assert.equal(unpacked.lowerIntLength[0], 0x1F);
+                assert.equal(unpacked.CFD[1], 0x374A998*10 + ' ns');
+              
+            }); 
+
+            QUnit.test("typeX", function( assert ){
+                unpacked = {};
+                parser.parsers['X'](GRIF4Gdata[13], unpacked);
+
+                assert.equal(unpacked.typeXhead[0], 0);
+                assert.equal(unpacked.upperLongIntLength[0], 43);
+                assert.equal(unpacked.shortChargeIntegration[0], 1512908);
+              
+            }); 
+
+            QUnit.test("typeXI", function( assert ){
+                unpacked = {};
+                parser.parsers['XI'](GRIF4Gdata[14], unpacked);
+
+                assert.equal(unpacked.typeXIhead[0], 0);
+                assert.equal(unpacked.lowerLongIntLength[0], 1019);
+                assert.equal(unpacked.zeroCrossingTime[0], 1354136);
+              
+            }); 
+
+            QUnit.test("typeXII", function( assert ){
+                unpacked = {};
+                parser.parsers['XII'](GRIF4Gdata[15], unpacked);
+
+                assert.equal(unpacked.typeXpacketType[0], 0xE);
+                assert.equal(unpacked.channelAcceptedCounterValue[0], 8658);
+                assert.equal(unpacked.eventTrailerChannelTriggerCounterValue[0], 10648);
+              
+            }); 
+
+
+            QUnit.module('GRIF-4G fragment post-processing', {
+                "setup": function(){
+                    parser = new GRIF4GfragmentParser;
+
+                    dataStore = {
+                        'currentViewID': 'G16fragment',
+                        'GRIF4GfragmentWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(GRIF4Gdata);
+
+                    unpacked = {};
+                    parser.parsers['I'](GRIF4Gdata[0], unpacked);
+                    parser.parsers['II'](GRIF4Gdata[1], unpacked);
+                    parser.parsers['III'](GRIF4Gdata[2], unpacked);
+                    parser.parsers['IV'](GRIF4Gdata[3], unpacked);
+                    parser.parsers['V'](GRIF4Gdata[4], unpacked);
+                    parser.parsers['VI'](GRIF4Gdata[5], unpacked);
+                    parser.parsers['VII'](GRIF4Gdata[6], unpacked);
+                    parser.parsers['VIIa'](GRIF4Gdata[7], unpacked);
+                    parser.parsers['VIII'](GRIF4Gdata[11], unpacked);
+                    parser.parsers['IX'](GRIF4Gdata[12], unpacked);
+                    parser.parsers['X'](GRIF4Gdata[13], unpacked);
+                    parser.parsers['XI'](GRIF4Gdata[14], unpacked);
+                    parser.parsers['XII'](GRIF4Gdata[15], unpacked);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("timestamp", function ( assert ){
+
+                parser.reconstructTimestamp(unpacked);
+                assert.equal(unpacked.timestamp[1], 2.33628530524E+13+' ns');
+            });
+
+            QUnit.test("integrationLength", function ( assert ){
+
+                parser.reconstructIntegrationLength(unpacked);
+                assert.equal(unpacked.integrationLength[0], 63);
+                assert.equal(unpacked.longIntegrationLength[0],45051);
+            });
+
+
+
+            QUnit.module('GRIF-4G fragment full chain processing', {
+                "setup": function(){
+                    parser = new GRIF4GfragmentParser;
+
+                    dataStore = {
+                        'currentViewID': 'G4Gfragment',
+                        'GRIF4GfragmentWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(GRIF4Gdata);
+
+                    unpacked = {};
+                    parser.parsers['I'](GRIF4Gdata[0], unpacked);
+                    parser.parsers['II'](GRIF4Gdata[1], unpacked);
+                    parser.parsers['III'](GRIF4Gdata[2], unpacked);
+                    parser.parsers['IV'](GRIF4Gdata[3], unpacked);
+                    parser.parsers['V'](GRIF4Gdata[4], unpacked);
+                    parser.parsers['VI'](GRIF4Gdata[5], unpacked);
+                    parser.parsers['VII'](GRIF4Gdata[6], unpacked);
+                    parser.parsers['VIIa'](GRIF4Gdata[7], unpacked);
+                    parser.parsers['VIII'](GRIF4Gdata[11], unpacked);
+                    parser.parsers['IX'](GRIF4Gdata[12], unpacked);
+                    parser.parsers['X'](GRIF4Gdata[13], unpacked);
+                    parser.parsers['XI'](GRIF4Gdata[14], unpacked);
+                    parser.parsers['XII'](GRIF4Gdata[15], unpacked);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("assessComposition", function ( assert ){
+
+                var flags = parser.assessComposition(GRIF4Gdata),
+                    buffer;
+
+                //nominally correct
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, []);
+
+                //not enough words
+                buffer = GRIF4Gdata.slice(1,2)
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Not enough words to make an event.'])
+
+                //wrong first word
+                buffer = GRIF4Gdata.slice()
+                buffer[0] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['First word does not start with 0x8'])
+
+                //wrong second word
+                buffer = GRIF4Gdata.slice()
+                buffer[1] = 0xBEEFBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Second word does not start with 0xD'])
+
+                //wrong third word
+                buffer = GRIF4Gdata.slice()
+                buffer[2] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Third word does not start with 00'])
+
+                //wrong fourth word
+                buffer = GRIF4Gdata.slice()
+                buffer[3] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.equal(dataStore.GRIF4GfragmentCompositionalFlags[0], 'Fourth word does not start with 0')
+
+                //make sure the right number of type IV words is detected
+                parser.assessComposition(data)
+                assert.equal(dataStore.GRIF4GfragmentDetails.nTypeIV, 1)
+
+                //wrong type V identifier
+                buffer = GRIF4Gdata.slice()
+                buffer[4] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Missing type V word or type V word out of sequence'])
+
+                //wrong type VI identifier
+                buffer = GRIF4Gdata.slice()
+                buffer[5] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Missing type VI word or type VI word out of sequence'])
+
+                //wrong type VII identifier
+                buffer = GRIF4Gdata.slice()
+                buffer[6] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Missing type VII word or type VII word out of sequence'])
+
+                //make sure the right number of type VIIa words is detected
+                parser.assessComposition(data)
+                assert.equal(dataStore.GRIF4GfragmentDetails.nTypeVIIa, 4)
+
+                //wrong type VIII identifier
+                buffer = GRIF4Gdata.slice()
+                buffer[11] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Missing type VIII word or type VIII word out of sequence'])
+
+                //wrong type IX identifier
+                buffer = GRIF4Gdata.slice()
+                buffer[12] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Missing type IX word or type IX word out of sequence'])
+
+                //missing trailer
+                buffer = GRIF4Gdata.slice()
+                buffer[buffer.length-1] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Missing type XII word or type XII word out of sequence'])                
+                //nonsense number of words
+                buffer = GRIF4Gdata.slice(0, GRIF4Gdata.length-1)
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Missing type XII word or type XII word out of sequence', 'Nonsense number of words at end of event (must have either 1 trailer or 2 DESCANT + 1 trailer)'])
+
+                //garbled DESCANT words
+                buffer = GRIF4Gdata.slice()
+                buffer[14] = 0xDEADBEEF
+                parser.assessComposition(buffer, true)
+                assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Garbled DESCANT words (types X and / or XI)'])
+
+
+            });
         </script>
       </body>
 </html>

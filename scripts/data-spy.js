@@ -488,6 +488,137 @@ function defineGRIF4GfragmentTableStructure(){
 
 }
 
+function definePPGtableStructure(){
+    //returns an array describing the table sections and entries, for use by the templater.
+
+    var words = [];
+
+    //define words + items for templating
+    words[0] = {
+        "label": 'I',
+        "members": [
+            {
+                'id': 'typeIpacketType',
+                'title': 'Type I Packet Type'
+            },
+
+            {
+                'id': 'moduleType',
+                'title': 'Module Type'
+            },
+
+            {
+                'id': 'wordCount',
+                'title': 'Word Count'
+            },
+
+            {
+                'id': 'address',
+                'title': 'Address'
+            },
+
+            {
+                'id': 'detType',
+                'title': 'Detector Type'
+            }
+        ]
+    }
+
+    words[1] = {
+        "label": 'II',
+        "members": [
+            {
+                'id': 'typeIIpacketType',
+                'title': 'Type II Packet Type'
+            },
+
+            {
+                'id': 'networkPacketCounterValue',
+                'title': 'Network Packet Counter Value'
+            }
+        ]
+    }
+
+    words[2] = {
+        "label": 'III',
+        "members": [
+            {
+                'id': 'typeIIIpacketType',
+                'title': 'Type III Packet Type'
+            },
+
+            {
+                'id': 'expectedPPGpattern',
+                'title': 'Expected PPG Pattern'
+            }
+
+        ]
+    }
+
+    words[3] = {
+        "label": 'IV',
+        "members": [
+            {
+                'id': 'typeIVpacketType',
+                'title': 'Type IV Packet Type'
+            },
+
+            {
+                'id': 'confirmedPPGpattern',
+                'title': 'Confirmed PPG Pattern'
+            }
+        ]
+    }
+
+    words[4] = {
+        "label": 'V',
+        "members": [
+            {
+                'id': 'typeVPacketType',
+                'title': 'Type V Packet Type'
+            },
+
+            {
+                'id': 'timestampLowBits',
+                'title': 'Timestamp Low Bits'
+            }
+        ]
+    }
+
+    words[5] = {
+        "label": 'VI',
+        "members": [
+            {
+                'id': 'typeVIPacketType',
+                'title': 'Type VI Packet Type'
+            },
+
+            {
+                'id': 'timestampHighBits',
+                'title': 'Timestamp High Bits'
+            }
+        ]
+    }
+
+    words[6] = {
+        "label": 'VII',
+        "members": [
+            {
+                'id': 'typeVIIPacketType',
+                'title': 'Type VII Packet Type'
+            },
+
+            {
+                'id': 'previousPPGpatterns',
+                'title': 'Previous PPG Patterns'
+            }
+        ]
+    }
+
+    return words
+
+}
+
 ///////////////////////////
 // parsing handlers
 ///////////////////////////
@@ -498,7 +629,7 @@ function parseODB(payload){
     parseGRIF16fragment(payload[0]);
     //parseGRIF16scalar(payload[0]);
     parseGRIF4Gfragment(payload[2]);
-    //parsePPG(payload[0]);
+    parsePPG(payload[3]);
 }
 
 function parseGRIF16fragment(payload){
@@ -630,6 +761,63 @@ function parseGRIF4Gfragment(payload){
 
     //report raw event
     listRawEvent('rawGRIF4Gfragment',  payload)
+}
+
+function parsePPG(payload){
+    
+    var parser = new PPGparser,
+        flags, unpacked,
+        warnings = document.getElementById('warningsDivPPG'),
+        warningsData = {},
+        i, keys;
+
+    //assess composition of event
+    parser.assessComposition(payload);
+
+    //fill out table
+    unpacked = parser.unpackAll(payload);
+    keys = Object.keys(unpacked);
+    for(i=0; i<keys.length; i++){
+        if(document.getElementById(keys[i] + 'PPGParsed')){
+            document.getElementById(keys[i] + 'PPGHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+            document.getElementById(keys[i] + 'PPGParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+        }
+    }
+
+    //post-processing flags
+    parser.postProcessingFlags(unpacked);
+
+    //assemble flags and highlight problematic table entries
+    flags = dataStore.PPGcompositionalFlags;
+    keys = Object.keys(dataStore.PPGwordFlags)
+    for(i=0; i<keys.length; i++){
+        flags = flags.concat(dataStore.PPGwordFlags[keys[i]]);
+        document.getElementById(keys[i]+'4G').parentNode.setAttribute('style', 'background-color: #FF0000');
+    }
+
+    //raise warnings as necessary
+    if(flags.length == 0){
+        warningsData.good = true;
+        warnings.classList.remove('raised');
+        warnings.classList.add('ok');
+    } else {
+        warningsData.bad = {
+            "warnings" : flags
+        }
+        warnings.classList.remove('ok');
+        warnings.classList.add('raised');
+    }
+
+    warnings.innerHTML = Mustache.to_html(
+            dataStore.partials.warningsList,
+            warningsData
+        )
+
+    //report reconstructed values
+    document.getElementById('PPGtimestamp').innerHTML = 'Timestamp: ' + unpacked.timestamp[1];
+
+    //report raw event
+    listRawEvent('rawPPG',  payload)
 }
 
 function plotWaveform(wvfrm, divID){

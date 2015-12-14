@@ -11,6 +11,7 @@
         <script src="../scripts/qunit.js"></script>
         <script src='../scripts/GRIF16-fragment-parse.js' type="text/javascript"></script>
         <script src='../scripts/GRIF4G-fragment-parse.js' type="text/javascript"></script>
+        <script src='../scripts/PPG-parse.js' type="text/javascript"></script>
 
         <script>
 
@@ -675,6 +676,104 @@
                 parser.assessComposition(buffer, true)
                 assert.deepEqual(dataStore.GRIF4GfragmentCompositionalFlags, ['Garbled DESCANT words (types X and / or XI)'])
 
+            });
+
+            ///////////////////////////
+            //PPG
+            ///////////////////////////
+
+            PPGdata = [
+                0x88A67C80,
+                0xD0850F81,
+                0x0A04FC84,
+                0x93F461FF,
+                0xAD74A998,
+                0xB574A998,
+                0xE874A998
+            ];
+
+            QUnit.module('PPG fragment parser', {
+                "setup": function(){
+                    parser = new PPGparser;
+
+                    dataStore = {
+                        'currentViewID': 'PPG',
+                        'PPGordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(PPGdata);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("typeI", function( assert ) {
+                unpacked = {};
+                parser.parsers['I'](PPGdata[0], unpacked);
+
+                assert.equal(unpacked.typeIpacketType[0], 8);
+                assert.equal(unpacked.moduleType[1], 'GRIF-C Master');
+                assert.equal(unpacked.wordCount, 10);
+                assert.equal(unpacked.masterChan, 6);
+                assert.equal(unpacked.slaveChan, 7);
+                assert.equal(unpacked.collectorChan, 200);
+                assert.equal(unpacked.detType[1], 'HPGe Low Gain')
+            });
+
+            QUnit.test("typeII", function( assert ) {
+                unpacked = {};
+                parser.parsers['II'](PPGdata[1], unpacked);
+
+                assert.equal(unpacked.typeIIpacketType[0], 0xD);
+                assert.equal(unpacked.networkPacketCounterValue[0], 0x0850F81);
+
+            });
+
+            QUnit.test("typeIII", function( assert ) {
+                unpacked = {};
+                parser.parsers['III'](PPGdata[2], unpacked);
+
+                assert.equal(unpacked.typeIIIpacketType[0], 0x0);
+                assert.equal(unpacked.expectedPPGpattern[0], 0xA04FC84);
+
+            });
+
+            QUnit.test("typeIV", function( assert ) {
+                unpacked = {};
+                parser.parsers['IV'](PPGdata[3], unpacked);
+
+                assert.equal(unpacked.typeIVpacketType[0], 0x9);
+                assert.equal(unpacked.confirmedPPGpattern[0], 0x3F461FF);
+
+            });
+
+            QUnit.test("typeV", function( assert ) {
+                unpacked = {};
+                parser.parsers['V'](PPGdata[4], unpacked);
+
+                assert.equal(unpacked.typeVpacketType[0], 0xA);
+                assert.equal(unpacked.timestampLowBits[0], 0xD74A998);
+
+            });
+
+            QUnit.test("typeVI", function( assert ) {
+                unpacked = {};
+                parser.parsers['VI'](PPGdata[5], unpacked);
+
+                assert.equal(unpacked.typeVIpacketType[0], 0xB);
+                assert.equal(unpacked.timestampHighBits[0], 0x574A998);
+
+            });
+
+            QUnit.test("typeVII", function( assert ) {
+                unpacked = {};
+                parser.parsers['VII'](PPGdata[6], unpacked);
+
+                assert.equal(unpacked.typeVIIpacketType[0], 0xE);
+                assert.equal(unpacked.previousPPGpattern[0], 0x874A998);
 
             });
         </script>

@@ -619,6 +619,112 @@ function definePPGtableStructure(){
 
 }
 
+function defineScalerTableStructure(){
+    //returns an array describing the table sections and entries, for use by the templater.
+
+    var words = [];
+
+    //define words + items for templating
+    words[0] = {
+        "label": 'I',
+        "members": [
+            {
+                'id': 'typeIpacketType',
+                'title': 'Type I Packet Type'
+            },
+
+            {
+                'id': 'moduleType',
+                'title': 'Module Type'
+            },
+
+            {
+                'id': 'wordCount',
+                'title': 'Word Count'
+            },
+
+            {
+                'id': 'address',
+                'title': 'Address'
+            },
+
+            {
+                'id': 'detType',
+                'title': 'Detector Type'
+            }
+        ]
+    }
+
+    words[1] = {
+        "label": 'II',
+        "members": [
+            {
+                'id': 'typeIIpacketType',
+                'title': 'Type II Packet Type'
+            },
+
+            {
+                'id': 'networkPacketCounterValue',
+                'title': 'Network Packet Counter Value'
+            }
+        ]
+    }
+
+    words[2] = {
+        "label": 'III',
+        "members": [
+            {
+                'id': 'typeIIIpacketType',
+                'title': 'Type III Packet Type'
+            },
+
+            {
+                'id': 'timestampLowBits',
+                'title': 'Time Stamp Low Bits'
+            }
+
+        ]
+    }
+
+    words[3] = {
+        "label": 'IV',
+        "members": [
+            {
+                'id': 'scalerValue',
+                'title': 'Scaler Values'
+            }
+        ]
+    }
+
+    words[4] = {
+        "label": 'V',
+        "members": [
+            {
+                'id': 'typeVPacketType',
+                'title': 'Type V Packet Type'
+            },
+
+            {
+                'id': 'scalerType',
+                'title': 'Scaler Type'
+            },
+
+            {
+                'id': 'timestampHighBits',
+                'title': 'Timestamp High Bits'
+            },
+
+            {
+                'id': 'repeatedTimeStampLowBits',
+                'title': 'Repeated Timestamp Low Bits'
+            }
+        ]
+    }
+
+    return words
+
+}
+
 ///////////////////////////
 // parsing handlers
 ///////////////////////////
@@ -627,7 +733,7 @@ function parseODB(payload){
     //take the events from the odb, packed as payload = [grif16 fragment, grif16 scalar, grif 4g fragment, ppg], and unpack them.
 
     parseGRIF16fragment(payload[0]);
-    //parseGRIF16scalar(payload[0]);
+    parseScaler(payload[1]);
     parseGRIF4Gfragment(payload[2]);
     parsePPG(payload[3]);
 }
@@ -818,6 +924,63 @@ function parsePPG(payload){
 
     //report raw event
     listRawEvent('rawPPG',  payload)
+}
+
+function parseScaler(payload){
+    
+    var parser = new scalerParser,
+        flags, unpacked,
+        warnings = document.getElementById('warningsDivScaler'),
+        warningsData = {},
+        i, keys;
+
+    //assess composition of event
+    parser.assessComposition(payload);
+
+    //fill out table
+    unpacked = parser.unpackAll(payload);
+    keys = Object.keys(unpacked);
+    for(i=0; i<keys.length; i++){
+        if(document.getElementById(keys[i] + 'ScalerParsed')){
+            document.getElementById(keys[i] + 'ScalerHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+            document.getElementById(keys[i] + 'ScalerParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+        }
+    }
+
+    //post-processing flags
+    parser.postProcessingFlags(unpacked);
+
+    //assemble flags and highlight problematic table entries
+    flags = dataStore.scalerCompositionalFlags;
+    keys = Object.keys(dataStore.scalerWordFlags)
+    for(i=0; i<keys.length; i++){
+        flags = flags.concat(dataStore.scalerWordFlags[keys[i]]);
+        document.getElementById(keys[i]+'Scaler').parentNode.setAttribute('style', 'background-color: #FF0000');
+    }
+
+    //raise warnings as necessary
+    if(flags.length == 0){
+        warningsData.good = true;
+        warnings.classList.remove('raised');
+        warnings.classList.add('ok');
+    } else {
+        warningsData.bad = {
+            "warnings" : flags
+        }
+        warnings.classList.remove('ok');
+        warnings.classList.add('raised');
+    }
+
+    warnings.innerHTML = Mustache.to_html(
+            dataStore.partials.warningsList,
+            warningsData
+        )
+
+    //report reconstructed values
+    document.getElementById('scalerTimestamp').innerHTML = 'Timestamp: ' + unpacked.timestamp[1];
+
+    //report raw event
+    listRawEvent('rawScaler',  payload)
 }
 
 function plotWaveform(wvfrm, divID){

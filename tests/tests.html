@@ -12,6 +12,7 @@
         <script src='../scripts/GRIF16-fragment-parse.js' type="text/javascript"></script>
         <script src='../scripts/GRIF4G-fragment-parse.js' type="text/javascript"></script>
         <script src='../scripts/PPG-parse.js' type="text/javascript"></script>
+        <script src='../scripts/scaler-parse.js' type="text/javascript"></script>
 
         <script>
 
@@ -509,7 +510,7 @@
                     parser = new GRIF4GfragmentParser;
 
                     dataStore = {
-                        'currentViewID': 'G16fragment',
+                        'currentViewID': 'G4Gfragment',
                         'GRIF4GfragmentWordFlags' : {}
                     };
 
@@ -698,7 +699,7 @@
 
                     dataStore = {
                         'currentViewID': 'PPG',
-                        'PPGordFlags' : {}
+                        'PPGwordFlags' : {}
                     };
 
                     //assess composition expected before parsing
@@ -775,6 +776,276 @@
                 assert.equal(unpacked.typeVIIpacketType[0], 0xE);
                 assert.equal(unpacked.previousPPGpattern[0], 0x874A998);
 
+            });
+
+            QUnit.module('PPG post-processing', {
+                "setup": function(){
+                    parser = new PPGparser;
+
+                    dataStore = {
+                        'currentViewID': 'PPG',
+                        'PPGwordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(PPGdata);
+
+                    unpacked = {};
+                    parser.parsers['I'](PPGdata[0], unpacked);
+                    parser.parsers['II'](PPGdata[1], unpacked);
+                    parser.parsers['III'](PPGdata[2], unpacked);
+                    parser.parsers['IV'](PPGdata[3], unpacked);
+                    parser.parsers['V'](PPGdata[4], unpacked);
+                    parser.parsers['VI'](PPGdata[5], unpacked);
+                    parser.parsers['VII'](PPGdata[6], unpacked);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("timestamp", function ( assert ){
+
+                parser.reconstructTimestamp(unpacked);
+                assert.equal(unpacked.timestamp[1], 0x574A998D74A998*10+' ns');
+            });
+
+            QUnit.module('PPG full chain processing', {
+                "setup": function(){
+                    parser = new PPGparser;
+
+                    dataStore = {
+                        'currentViewID': 'PPG',
+                        'PPGwordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(PPGdata);
+
+                    unpacked = {};
+                    parser.parsers['I'](PPGdata[0], unpacked);
+                    parser.parsers['II'](PPGdata[1], unpacked);
+                    parser.parsers['III'](PPGdata[2], unpacked);
+                    parser.parsers['IV'](PPGdata[3], unpacked);
+                    parser.parsers['V'](PPGdata[4], unpacked);
+                    parser.parsers['VI'](PPGdata[5], unpacked);
+                    parser.parsers['VII'](PPGdata[6], unpacked);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("assessComposition", function ( assert ){
+
+                var flags = parser.assessComposition(PPGdata),
+                    buffer;
+
+                //nominally correct
+                assert.deepEqual(dataStore.PPGcompositionalFlags, []);
+
+                //not enough words
+                buffer = PPGdata.slice(1,2)
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.PPGcompositionalFlags, ['Incorrect number of words for a PPG event.'])
+
+                //wrong word labels
+                buffer = [
+                    0xFFFFFFFF,
+                    0xFFFFFFFF,
+                    0xFFFFFFFF,
+                    0xFFFFFFFF,
+                    0xFFFFFFFF,
+                    0xFFFFFFFF,
+                    0xFFFFFFFF
+                ]
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.PPGcompositionalFlags, [
+                    'First word does not start with 0x8',
+                    'Second word does not start with 0xD',
+                    'Third word does not start with 0x0',
+                    'Fourth word does not start with 0x9', 
+                    'Fifth word does not start with 0xA',
+                    'Sixth word does not start with 0xB',
+                    'Seventh word does not start with 0xE' 
+                ])
+
+            });
+
+            ///////////////////////////
+            //Scaler
+            ///////////////////////////
+
+            scalerData = [
+                0x88A67C8F,
+                0xD0850F81,
+                0xAA04FC84,
+                0x93F461FF,
+                0xED74A998
+            ];
+
+            QUnit.module('Scaler parser', {
+                "setup": function(){
+                    parser = new scalerParser;
+
+                    dataStore = {
+                        'currentViewID': 'G16scaler',
+                        'scalerFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(scalerData);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("typeI", function( assert ) {
+                unpacked = {};
+                parser.parsers['I'](scalerData[0], unpacked);
+
+                assert.equal(unpacked.typeIpacketType[0], 8);
+                assert.equal(unpacked.moduleType[1], 'GRIF-C Master');
+                assert.equal(unpacked.wordCount, 10);
+                assert.equal(unpacked.masterChan, 6);
+                assert.equal(unpacked.slaveChan, 7);
+                assert.equal(unpacked.collectorChan, 200);
+                assert.equal(unpacked.detType[0], 0xF)
+            });
+
+            QUnit.test("typeII", function( assert ) {
+                unpacked = {};
+                parser.parsers['II'](scalerData[1], unpacked);
+
+                assert.equal(unpacked.typeIIpacketType[0], 0xD);
+                assert.equal(unpacked.networkPacketCounterValue[0], 0x0850F81);
+
+            });
+
+            QUnit.test("typeIII", function( assert ) {
+                unpacked = {};
+                parser.parsers['III'](scalerData[2], unpacked);
+
+                assert.equal(unpacked.typeIIIpacketType[0], 0xA);
+                assert.equal(unpacked.timestampLowBits[0], 0xA04FC84);
+
+            });
+
+            QUnit.test("typeIV", function( assert ) {
+                unpacked = {};
+                parser.parsers['IV'](scalerData[3], unpacked);
+
+                assert.equal(unpacked.scalerValue[0], 0x93F461FF);
+
+            });
+
+            QUnit.test("typeV", function( assert ) {
+                unpacked = {};
+                parser.parsers['V'](scalerData[4], unpacked);
+
+                assert.equal(unpacked.typeVpacketType[0], 0xE);
+                assert.equal(unpacked.scalerType[0], 0xD);
+                assert.equal(unpacked.timestampHighBits[0], 0x74A9);
+                assert.equal(unpacked.repeatedTimeStampLowBits[0], 0x98);
+
+            });
+
+            QUnit.module('Scaler post-processing', {
+                "setup": function(){
+                    parser = new scalerParser;
+
+                    dataStore = {
+                        'currentViewID': 'G16scaler',
+                        'scalerWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(scalerData);
+
+                    unpacked = {};
+                    parser.parsers['I'](scalerData[0], unpacked);
+                    parser.parsers['II'](scalerData[1], unpacked);
+                    parser.parsers['III'](scalerData[2], unpacked);
+                    parser.parsers['IV'](scalerData[3], unpacked);
+                    parser.parsers['V'](scalerData[4], unpacked);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("timestamp", function ( assert ){
+
+                parser.reconstructTimestamp(unpacked);
+                assert.equal(unpacked.timestamp[1], 0x74A9A04FC84*10+' ns');
+            });
+
+            QUnit.module('Scaler full chain processing', {
+                "setup": function(){
+                    parser = new scalerParser;
+
+                    dataStore = {
+                        'currentViewID': 'G16scaler',
+                        'scalerWordFlags' : {}
+                    };
+
+                    //assess composition expected before parsing
+                    parser.assessComposition(scalerData);
+
+                    unpacked = {};
+                    parser.parsers['I'](scalerData[0], unpacked);
+                    parser.parsers['II'](scalerData[1], unpacked);
+                    parser.parsers['III'](scalerData[2], unpacked);
+                    parser.parsers['IV'](scalerData[3], unpacked);
+                    parser.parsers['V'](scalerData[4], unpacked);
+                },
+
+                "teardown": function(){
+                    return 0;
+                }
+            });
+
+            QUnit.test("assessComposition", function ( assert ){
+
+                var flags = parser.assessComposition(scalerData),
+                    buffer;
+
+                //nominally correct
+                assert.deepEqual(dataStore.scalerCompositionalFlags, []);
+
+                //not enough words
+                buffer = scalerData.slice(1,2)
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.scalerCompositionalFlags, ['Too few words for a scaler event.'])
+
+                //wrong first word
+                buffer = scalerData.slice()
+                buffer[0] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.scalerCompositionalFlags, ['First word does not start with 0x8'])
+
+                //wrong second word
+                buffer = scalerData.slice()
+                buffer[1] = 0xBEEFBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.scalerCompositionalFlags, ['Second word does not start with 0xD'])
+
+                //wrong third word
+                buffer = scalerData.slice()
+                buffer[2] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.scalerCompositionalFlags, ['Third word does not start with 0xA'])
+
+                //wrong last word
+                buffer = scalerData.slice()
+                buffer[4] = 0xDEADBEEF
+                parser.assessComposition(buffer)
+                assert.deepEqual(dataStore.scalerCompositionalFlags, ['Last word does not start with 0xE'])
             });
         </script>
       </body>

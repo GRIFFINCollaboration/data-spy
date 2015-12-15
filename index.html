@@ -13,6 +13,7 @@
         <script src='scripts/GRIF16-fragment-parse.js' type="text/javascript"></script>
         <script src='scripts/GRIF4G-fragment-parse.js' type="text/javascript"></script>
         <script src='scripts/PPG-parse.js' type="text/javascript"></script>
+        <script src='scripts/scaler-parse.js' type="text/javascript"></script>
         <link rel="stylesheet" href="css/data-spy.css">
     </head>
 
@@ -67,7 +68,26 @@
 
         <div id='G16scalar' class='hidden'>
             <div class='col-md-8 col-md-offset-2'>
-                <h2>GRIF-16 Scalar</h2>
+                <h2>Scaler Events</h2>
+            </div>
+            <div id='warningsDivScaler' class='col-md-8 col-md-offset-2 warnings'></div>
+            <div class='col-md-4 col-md-offset-2' id='leftScaler'></div>
+            <div class='col-md-4' id='rightScaler'></div>
+            <div class='sectionWrapper'>
+                <div class='col-md-4 col-md-offset-2'>
+                    <div class='box'>
+                        <h2>Reconstructed Values</h2>
+                        <ul>
+                            <li id='scalerTimestamp'></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class='col-md-4'>
+                    <div class='box'>
+                        <h2>Raw Event</h2>
+                        <ul class='raw' id='rawScaler'></ul>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -161,6 +181,7 @@
                 grif16fragmentWords = defineGRIF16fragmentTableStructure(),
                 grif4GfragmentWords = defineGRIF4GfragmentTableStructure(),
                 PPGwords = definePPGtableStructure(),
+                scalerWords = defineScalerTableStructure(),
                 ODBrequest = 'http://grsmid00.triumf.ca:8081/?cmd=jcopy&odb0=/Runinfo/Run number&encoding=json-p-nokeys&callback=parseODB',
                 templates = [
                     'parsingTable',
@@ -170,6 +191,7 @@
                 'currentViewID': 'G16fragment',
                 'GRIF16fragmentWordFlags' : {},
                 'GRIF4GfragmentWordFlags' : {},
+                'scalerWordFlags' : {},
                 'PPGwordFlags' : {}
             };
 
@@ -205,6 +227,22 @@
 
                         //grif 16 scalar
 
+                        document.getElementById('leftScaler').innerHTML = Mustache.to_html(
+                                partials[0],
+                                {
+                                    "words" : scalerWords.slice(0,3),
+                                    'IDsuffix': 'Scaler'
+                                }
+                            )
+
+                        document.getElementById('rightScaler').innerHTML = Mustache.to_html(
+                                partials[0],
+                                {
+                                    "words" : scalerWords.slice(3),
+                                    'IDsuffix': 'Scaler'
+                                }
+                            )
+
                         //grif 4g fragments
 
                         document.getElementById('leftG4Gfragment').innerHTML = Mustache.to_html(
@@ -228,7 +266,7 @@
                         document.getElementById('leftPPG').innerHTML = Mustache.to_html(
                                 partials[0],
                                 {
-                                    "words" : PPGwords.slice(0,3),
+                                    "words" : PPGwords.slice(0,2),
                                     'IDsuffix': 'PPG'
                                 }
                             )
@@ -236,7 +274,7 @@
                         document.getElementById('rightPPG').innerHTML = Mustache.to_html(
                                 partials[0],
                                 {
-                                    "words" : PPGwords.slice(3),
+                                    "words" : PPGwords.slice(2),
                                     'IDsuffix': 'PPG'
                                 }
                             )
@@ -296,11 +334,19 @@
                                 0xAD74A998,
                                 0xB574A998,
                                 0xE874A998
+                            ],
+
+                            'scalerData': [
+                                0x88A67C8F,
+                                0xD0850F81,
+                                0xAA04FC84,
+                                0x93F461FF,
+                                0xED74A998
                             ]
 
                         }
 
-                        parseODB([testingData.grif16fragment, null, testingData.grif4Gdata, testingData.PPGdata]);
+                        parseODB([testingData.grif16fragment, testingData.scalerData, testingData.grif4Gdata, testingData.PPGdata]);
                     }
                 )
 

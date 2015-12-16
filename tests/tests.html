@@ -105,7 +105,7 @@
                 parser.parsers['V'](data[4], unpacked);
 
                 assert.equal(unpacked.typeVPacketType, 0x9);
-                assert.equal(unpacked.channelTriggerCounterValue, 0xD74A998);
+                assert.equal(unpacked.channelAcceptedHitCounter, 0xD74A998);
 
             }); 
 
@@ -163,7 +163,7 @@
 
                 assert.equal(unpacked.typeXpacketType[0], 0xE);
                 assert.equal(unpacked.channelAcceptedCounterValue[0], 8658);
-                assert.equal(unpacked.eventTrailerChannelTriggerCounterValue[0], 10648);
+                assert.equal(unpacked.eventTrailerChannelAcceptedHitCounter[0], 10648);
               
             }); 
 
@@ -422,7 +422,7 @@
                 parser.parsers['V'](GRIF4Gdata[4], unpacked);
 
                 assert.equal(unpacked.typeVPacketType, 0x9);
-                assert.equal(unpacked.channelTriggerCounterValue, 0xD74A998);
+                assert.equal(unpacked.channelAcceptedHitCounter, 0xD74A998);
 
             }); 
 
@@ -500,7 +500,7 @@
 
                 assert.equal(unpacked.typeXpacketType[0], 0xE);
                 assert.equal(unpacked.channelAcceptedCounterValue[0], 8658);
-                assert.equal(unpacked.eventTrailerChannelTriggerCounterValue[0], 10648);
+                assert.equal(unpacked.eventTrailerChannelAcceptedHitCounter[0], 10648);
               
             }); 
 
@@ -948,7 +948,7 @@
                 parser.parsers['V'](scalerData[4], unpacked);
 
                 assert.equal(unpacked.typeVpacketType[0], 0xE);
-                assert.equal(unpacked.scalerType[0], 0xD);
+                assert.equal(unpacked.scalerType[1], 'rate');
                 assert.equal(unpacked.timestampHighBits[0], 0x74A9);
                 assert.equal(unpacked.repeatedTimeStampLowBits[0], 0x98);
 

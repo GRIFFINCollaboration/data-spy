@@ -140,7 +140,7 @@ GRIF4GfragmentParser = function(){
 
         //slice up word
         unpacked['typeVPacketType']  = [(word & 0xF0000000) >>> 28];
-        unpacked['channelTriggerCounterValue'] = [(word & 0x0FFFFFFF) >>> 0];
+        unpacked['channelAcceptedHitCounter'] = [(word & 0x0FFFFFFF) >>> 0];
     }.bind(this);
 
     this.parsers.VI = function(word, unpacked){
@@ -251,7 +251,7 @@ GRIF4GfragmentParser = function(){
         //slice up word
         unpacked['typeXpacketType']                        = [(word & 0xF0000000) >>> 28];
         unpacked['channelAcceptedCounterValue']            = [(word & 0x0FFFC000) >>> 14];
-        unpacked['eventTrailerChannelTriggerCounterValue'] = [(word & 0x00003FFF) >>> 0];
+        unpacked['eventTrailerChannelAcceptedHitCounter'] = [(word & 0x00003FFF) >>> 0];
 
     }.bind(this);
 

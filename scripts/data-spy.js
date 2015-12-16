@@ -108,8 +108,8 @@ function defineGRIF16fragmentTableStructure(){
             },
 
             {
-                'id': 'channelTriggerCounterValue',
-                'title': 'Channel Trigger Counter Value'
+                'id': 'channelAcceptedHitCounter',
+                'title': 'Channel Accepted Hit Counter'
             }
         ]
     }
@@ -218,8 +218,8 @@ function defineGRIF16fragmentTableStructure(){
             },
 
             {
-                'id': 'eventTrailerChannelTriggerCounterValue',
-                'title': 'Repeat Channel Trigger Counter Value Low Bits'
+                'id': 'eventTrailerChannelAcceptedHitCounter',
+                'title': 'Repeat Channel Accepted Hit Counter Low Bits'
             }
         ]
     }
@@ -328,8 +328,8 @@ function defineGRIF4GfragmentTableStructure(){
             },
 
             {
-                'id': 'channelTriggerCounterValue',
-                'title': 'Channel Trigger Counter Value'
+                'id': 'channelAcceptedHitCounter',
+                'title': 'Channel Accepted Hit Counter'
             }
         ]
     }
@@ -478,8 +478,8 @@ function defineGRIF4GfragmentTableStructure(){
             },
 
             {
-                'id': 'eventTrailerChannelTriggerCounterValue',
-                'title': 'Repeat Channel Trigger Counter Value Low Bits'
+                'id': 'eventTrailerChannelAcceptedHitCounter',
+                'title': 'Repeat Channel Accepted Hit Counter Low Bits'
             }
         ]
     }
@@ -700,7 +700,7 @@ function defineScalerTableStructure(){
         "label": 'V',
         "members": [
             {
-                'id': 'typeVPacketType',
+                'id': 'typeVpacketType',
                 'title': 'Type V Packet Type'
             },
 
@@ -754,8 +754,19 @@ function parseGRIF16fragment(payload){
     keys = Object.keys(unpacked);
     for(i=0; i<keys.length; i++){
         if(document.getElementById(keys[i] + 'Parsed')){
-            document.getElementById(keys[i] + 'Hex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
-            document.getElementById(keys[i] + 'Parsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            if(typeof unpacked[keys[i]][0] == 'number'){
+                document.getElementById(keys[i] + 'Hex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+                document.getElementById(keys[i] + 'Parsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            } else{
+                rawSeries = '';
+                parsedSeries = '';
+                for(j=0; j<unpacked[keys[i]].length; j++){
+                    rawSeries += '0x'+unpacked[keys[i]][j][0].toString(16) + '<br>'
+                    parsedSeries += unpacked[keys[i]][j].slice(-1)[0] + '<br>';
+                }
+                document.getElementById(keys[i] + 'Hex').innerHTML = rawSeries;
+                document.getElementById(keys[i] + 'Parsed').innerHTML = parsedSeries;
+            }
         }
     }
 
@@ -819,8 +830,19 @@ function parseGRIF4Gfragment(payload){
     keys = Object.keys(unpacked);
     for(i=0; i<keys.length; i++){
         if(document.getElementById(keys[i] + '4GParsed')){
-            document.getElementById(keys[i] + '4GHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
-            document.getElementById(keys[i] + '4GParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            if(typeof unpacked[keys[i]][0] == 'number'){
+                document.getElementById(keys[i] + '4GHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+                document.getElementById(keys[i] + '4GParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            } else{
+                rawSeries = '';
+                parsedSeries = '';
+                for(j=0; j<unpacked[keys[i]].length; j++){
+                    rawSeries += '0x'+unpacked[keys[i]][j][0].toString(16) + '<br>'
+                    parsedSeries += unpacked[keys[i]][j].slice(-1)[0] + '<br>';
+                }
+                document.getElementById(keys[i] + '4GHex').innerHTML = rawSeries;
+                document.getElementById(keys[i] + '4GParsed').innerHTML = parsedSeries;
+            }
         }
     }
 
@@ -885,8 +907,19 @@ function parsePPG(payload){
     keys = Object.keys(unpacked);
     for(i=0; i<keys.length; i++){
         if(document.getElementById(keys[i] + 'PPGParsed')){
-            document.getElementById(keys[i] + 'PPGHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
-            document.getElementById(keys[i] + 'PPGParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            if(typeof unpacked[keys[i]][0] == 'number'){
+                document.getElementById(keys[i] + 'PPGHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+                document.getElementById(keys[i] + 'PPGParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            } else{
+                rawSeries = '';
+                parsedSeries = '';
+                for(j=0; j<unpacked[keys[i]].length; j++){
+                    rawSeries += '0x'+unpacked[keys[i]][j][0].toString(16) + '<br>'
+                    parsedSeries += unpacked[keys[i]][j].slice(-1)[0] + '<br>';
+                }
+                document.getElementById(keys[i] + 'PPGHex').innerHTML = rawSeries;
+                document.getElementById(keys[i] + 'PPGParsed').innerHTML = parsedSeries;
+            }
         }
     }
 
@@ -932,7 +965,7 @@ function parseScaler(payload){
         flags, unpacked,
         warnings = document.getElementById('warningsDivScaler'),
         warningsData = {},
-        i, keys;
+        i, j, rawSeries, parsedSeries, keys;
 
     //assess composition of event
     parser.assessComposition(payload);
@@ -942,8 +975,19 @@ function parseScaler(payload){
     keys = Object.keys(unpacked);
     for(i=0; i<keys.length; i++){
         if(document.getElementById(keys[i] + 'ScalerParsed')){
-            document.getElementById(keys[i] + 'ScalerHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
-            document.getElementById(keys[i] + 'ScalerParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            if(typeof unpacked[keys[i]][0] == 'number'){
+                document.getElementById(keys[i] + 'ScalerHex').innerHTML = '0x'+unpacked[keys[i]][0].toString(16);
+                document.getElementById(keys[i] + 'ScalerParsed').innerHTML = unpacked[keys[i]].slice(-1)[0];
+            } else{
+                rawSeries = '';
+                parsedSeries = '';
+                for(j=0; j<unpacked[keys[i]].length; j++){
+                    rawSeries += '0x'+unpacked[keys[i]][j][0].toString(16) + '<br>'
+                    parsedSeries += unpacked[keys[i]][j].slice(-1)[0] + '<br>';
+                }
+                document.getElementById(keys[i] + 'ScalerHex').innerHTML = rawSeries;
+                document.getElementById(keys[i] + 'ScalerParsed').innerHTML = parsedSeries;
+            }
         }
     }
 

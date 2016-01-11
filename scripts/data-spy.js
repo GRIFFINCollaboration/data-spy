@@ -574,7 +574,7 @@ function definePPGtableStructure(){
         "label": 'V',
         "members": [
             {
-                'id': 'typeVPacketType',
+                'id': 'typeVpacketType',
                 'title': 'Type V Packet Type'
             },
 
@@ -589,7 +589,7 @@ function definePPGtableStructure(){
         "label": 'VI',
         "members": [
             {
-                'id': 'typeVIPacketType',
+                'id': 'typeVIpacketType',
                 'title': 'Type VI Packet Type'
             },
 
@@ -604,13 +604,13 @@ function definePPGtableStructure(){
         "label": 'VII',
         "members": [
             {
-                'id': 'typeVIIPacketType',
+                'id': 'typeVIIpacketType',
                 'title': 'Type VII Packet Type'
             },
 
             {
-                'id': 'previousPPGpatterns',
-                'title': 'Previous PPG Patterns'
+                'id': 'previousPPGpattern',
+                'title': 'Previous PPG Pattern'
             }
         ]
     }

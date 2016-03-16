@@ -777,7 +777,8 @@ function parseGRIF16fragment(payload){
     flags = dataStore.GRIF16fragmentCompositionalFlags;
     keys = Object.keys(dataStore.GRIF16fragmentWordFlags)
     for(i=0; i<keys.length; i++){
-        flags = flags.concat(dataStore.GRIF16fragmentWordFlags[keys[i]]);
+        if(dataStore.GRIF16fragmentWordFlags[keys[i]] != '')    
+            flags = flags.concat(dataStore.GRIF16fragmentWordFlags[keys[i]]);
         document.getElementById(keys[i]).parentNode.setAttribute('style', 'background-color: #FF0000');
     }
 
@@ -853,7 +854,8 @@ function parseGRIF4Gfragment(payload){
     flags = dataStore.GRIF4GfragmentCompositionalFlags;
     keys = Object.keys(dataStore.GRIF4GfragmentWordFlags)
     for(i=0; i<keys.length; i++){
-        flags = flags.concat(dataStore.GRIF4GfragmentWordFlags[keys[i]]);
+        if(dataStore.GRIF4GfragmentWordFlags[keys[i]] != '')    
+            flags = flags.concat(dataStore.GRIF4GfragmentWordFlags[keys[i]]);
         document.getElementById(keys[i]+'4G').parentNode.setAttribute('style', 'background-color: #FF0000');
     }
 

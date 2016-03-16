@@ -199,7 +199,7 @@ GRIF4GfragmentParser = function(){
 
         //decode results
         //pulse height
-        unpacked['pulseHeight'][1] = unpacked['pulseHeight'][0] + ' ADC chan';
+        unpacked['pulseHeight'][1] = unpacked['pulseHeight'][0] + ' (time integral)';
 
     }.bind(this);
 
@@ -285,6 +285,12 @@ GRIF4GfragmentParser = function(){
             dataStore.GRIF4GfragmentWordFlags['waveformIndicator'] = 'Waveform indicator bit set but no waveform samples found.';
         else if(unpacked['waveformIndicator'] == 0 && dataStore.GRIF4GfragmentDetails.nTypeVIIa > 0)
             dataStore.GRIF4GfragmentWordFlags['waveformIndicator'] = 'Waveform indicator bit unset but ' + dataStore.GRIF4GfragmentDetails.nTypeVIIa + ' waveform samples found.';
+
+        // CFD and timestamp-low words should be within 10k units of each other
+        if(Math.abs(unpacked['CFD'][0] - unpacked['timestampLowBits'][0]) > 10000){
+            dataStore.GRIF4GfragmentWordFlags['CFD'] = "CFD and timestamp low bits should be within 10k units of each other.";
+            dataStore.GRIF4GfragmentWordFlags['timestampLowBits'] = '';
+        }
 
     }
 

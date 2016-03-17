@@ -13,27 +13,32 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIpacketType',
-                'title': 'Type I Packet Type'
+                'title': 'Type I Packet Type',
+                'tooltip': 'Type I words start with 0x8'
             },
 
             {
                 'id': 'moduleType',
-                'title': 'Module Type'
+                'title': 'Module Type',
+                'tooltip': 'Type of DAQ module that produced this word'
             },
 
             {
                 'id': 'wordCount',
-                'title': 'Word Count'
+                'title': 'Word Count',
+                'tooltip': 'Number of words in this event'
             },
 
             {
                 'id': 'address',
-                'title': 'Address'
+                'title': 'Address',
+                'tooltip': 'MSC address'
             },
 
             {
                 'id': 'detType',
-                'title': 'Detector Type'
+                'title': 'Detector Type',
+                'tooltip': 'Which detector produced this event'
             }
         ]
     }
@@ -43,12 +48,14 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIIpacketType',
-                'title': 'Type II Packet Type'
+                'title': 'Type II Packet Type',
+                'tooltip': 'Type II words start with 0xD'
             },
 
             {
                 'id': 'networkPacketCounterValue',
-                'title': 'Network Packet Counter Value'
+                'title': 'Network Packet Counter Value',
+                'tooltip': 'Count of events dispatched by Master'
             }
         ]
     }
@@ -58,27 +65,32 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIIIhead',
-                'title': 'Type III Packet Label'
+                'title': 'Type III Packet Label',
+                'tooltip': 'Type III words start with 00 (two bits)'
             },
 
             {
                 'id': 'filterPatterns',
-                'title': 'Filter Patterns'
+                'title': 'Filter Patterns',
+                'tooltip': 'Which filters passed this event'
             },
 
             {
                 'id': 'waveformIndicator',
-                'title': 'Waveform Indicator'
+                'title': 'Waveform Indicator',
+                'tooltip': 'Are waveforms present in this event?'
             },
 
             {
                 'id': 'reserved',
-                'title': 'Reserved Bits'
+                'title': 'Reserved Bits',
+                'tooltip': 'TBD'
             },
 
             {
                 'id': 'pileupType',
-                'title': 'Pileup Type'
+                'title': 'Pileup Type',
+                'tooltip': 'Number of hits piled up (max 31)'
             }
 
         ]
@@ -89,12 +101,14 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIVhead',
-                'title': 'Type IV Packet Label'
+                'title': 'Type IV Packet Label',
+                'tooltip': 'Type IV words start with a single 0 bit'
             },
 
             {
                 'id': 'filterConditionCounterValue',
-                'title': 'Filter Condition Counter Value'
+                'title': 'Filter Condition Counter Value',
+                'tooltip': 'Count of events passing individual filters (one counter for each filter passed)'
             }
         ]
     }
@@ -104,12 +118,14 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeVPacketType',
-                'title': 'Type V Packet Type'
+                'title': 'Type V Packet Type',
+                'tooltip': 'Type V words begin with 0x9'
             },
 
             {
                 'id': 'channelAcceptedHitCounter',
-                'title': 'Channel Accepted Hit Counter'
+                'title': 'Channel Accepted Hit Counter',
+                'tooltip': 'Count of threshold crossings on this channel'
             }
         ]
     }
@@ -119,12 +135,14 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeVIPacketType',
-                'title': 'Type VI Packet Type'
+                'title': 'Type VI Packet Type',
+                'tooltip': 'Type VI words begin with 0xA'
             },
 
             {
                 'id': 'timestampLowBits',
-                'title': 'Timestamp Low Bits'
+                'title': 'Timestamp Low Bits',
+                'tooltip': 'least-significant 28 bits of the event timestamp'
             }
         ]
     }
@@ -134,52 +152,43 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeVIIPacketType',
-                'title': 'Type VII Packet Type'
+                'title': 'Type VII Packet Type',
+                'tooltip': 'Type VII words begin with 0xB'
             },
 
             {
                 'id': 'deadtime',
-                'title': 'Deadtime'
+                'title': 'Deadtime',
+                'tooltip': 'Event deadtime'
             },
 
             {
                 'id': 'timestampHighBits',
-                'title': 'Timestamp High Bits'
+                'title': 'Timestamp High Bits',
+                'tooltip': 'Most significant bits of the timestamp'
             }
         ]
     }
-
-    // words[7] = {
-    //     "label": 'VIIa',
-    //     "members": [
-    //         {
-    //             'id': 'typeVIIaPacketType',
-    //             'title': 'Type VIIa Packet Type'
-    //         },
-
-    //         {
-    //             'id': 'waveformSample',
-    //             'title': 'Waveform Sample'
-    //         }
-    //     ]
-    // }
 
     words[7] = {
         "label": 'VIII',
         "members": [
             {
                 'id': 'typeVIIIhead',
-                'title': 'Type VIII Packet Label'
+                'title': 'Type VIII Packet Label',
+                'tooltip': 'Type VIII words begin with a single 0 bit'
             },
 
             {
                 'id': 'upperIntLength',
-                'title': 'Upper Integration Length'
+                'title': 'Upper Integration Length',
+                'tooltip': 'Upper bits of integration length'
             },
 
             {
                 'id': 'pulseHeight',
-                'title': 'Pulse Height'
+                'title': 'Pulse Height',
+                'tooltip': 'Pulse height in ADC channels'
             }
         ]
     }
@@ -189,17 +198,20 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIXhead',
-                'title': 'Type IX Packet Label'
+                'title': 'Type IX Packet Label',
+                'tooltip': 'Type IX words begin with a single 0 bit'
             },
 
             {
                 'id': 'lowerIntLength',
-                'title': 'Lower Integration Length'
+                'title': 'Lower Integration Length',
+                'tooltip': 'Lower bits of integration length'
             },
 
             {
                 'id': 'CFD',
-                'title': 'CFD'
+                'title': 'CFD',
+                'tooltip': 'CFD timing algorithm correction to the timestamp'
             }
         ]
     }
@@ -209,17 +221,20 @@ function defineGRIF16fragmentTableStructure(){
         "members": [
             {
                 'id': 'typeXpacketType',
-                'title': 'Type X Packet Type'
+                'title': 'Type X Packet Type',
+                'tooltip': 'Type X words begin with 0xE'
             },
 
             {
                 'id': 'channelAcceptedCounterValue',
-                'title': 'Channel Accepted Counter Value'
+                'title': 'Channel Accepted Counter Value',
+                'tooltip': 'Triggers accepted on channel since start of run'
             },
 
             {
                 'id': 'eventTrailerChannelAcceptedHitCounter',
-                'title': 'Repeat Channel Accepted Hit Counter Low Bits'
+                'title': 'Repeat Channel Accepted Hit Counter Low Bits',
+                'tooltip': 'Count of threshold crossings on this channel'
             }
         ]
     }
@@ -751,6 +766,7 @@ function parseGRIF16fragment(payload){
 
     //fill out table
     unpacked = parser.unpackAll(payload);
+
     keys = Object.keys(unpacked);
     for(i=0; i<keys.length; i++){
         if(document.getElementById(keys[i] + 'Parsed')){

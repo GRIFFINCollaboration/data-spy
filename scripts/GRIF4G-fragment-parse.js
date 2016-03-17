@@ -45,6 +45,9 @@ GRIF4GfragmentParser = function(){
         //<word>: number; 32 bits corresponding to a type I word
         //<unpacked>: object; a key-value store for holding the unpacked results
 
+        // add word to title row
+        document.getElementById('4GwordIvalue').innerHTML = '0x' + word.toString(16);
+
         //slice up word
         unpacked['typeIpacketType']   = [(word & 0xF0000000) >>> 28];
         unpacked['moduleType']        = [(word & 0x0E000000) >>> 25];
@@ -87,6 +90,9 @@ GRIF4GfragmentParser = function(){
         //<word>: number; 32 bits corresponding to a type II word
         //<unpacked>: object; a key-value store for holding the unpacked results
 
+        // add word to title row
+        document.getElementById('4GwordIIvalue').innerHTML = '0x' + word.toString(16);
+
         //slice up word
         unpacked['typeIIpacketType']          = [(word & 0xF0000000) >>> 28];
         unpacked['networkPacketCounterValue'] = [(word & 0x0FFFFFFF) >>> 0];
@@ -99,6 +105,9 @@ GRIF4GfragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         var patternsPassed, i;
+
+        // add word to title row
+        document.getElementById('4GwordIIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIIIhead']       = [(word & 0xC0000000) >>> 30];
@@ -131,12 +140,18 @@ GRIF4GfragmentParser = function(){
         //slice up word
         unpacked['typeIVhead'].push([(word & 0x80000000) >>> 31]);
         unpacked['filterConditionCounterValue'].push([(word & 0x7FFFFFFF) >>> 0]);
+
+        // add word to title row
+        document.getElementById('4GwordIVvalue').innerHTML = '(' + unpacked['typeIVhead'].length + ' words)'
     }.bind(this);
 
     this.parsers.V = function(word, unpacked){
         //parse a type V word
         //<word>: number; 32 bits corresponding to a type V word
         //<unpacked>: object; a key-value store for holding the unpacked results
+
+        // add word to title row
+        document.getElementById('4GwordVvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVPacketType']  = [(word & 0xF0000000) >>> 28];
@@ -148,6 +163,9 @@ GRIF4GfragmentParser = function(){
         //<word>: number; 32 bits corresponding to a type VI word
         //<unpacked>: object; a key-value store for holding the unpacked results
 
+        // add word to title row
+        document.getElementById('4GwordVIvalue').innerHTML = '0x' + word.toString(16);
+
         //slice up word
         unpacked['typeVIPacketType'] = [(word & 0xF0000000) >>> 28];
         unpacked['timestampLowBits'] = [(word & 0x0FFFFFFF) >>> 0];
@@ -158,6 +176,9 @@ GRIF4GfragmentParser = function(){
         //parse a type VII word
         //<word>: number; 32 bits corresponding to a type VII word
         //<unpacked>: object; a key-value store for holding the unpacked results
+
+        // add word to title row
+        document.getElementById('4GwordVIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVIIPacketType'] = [(word & 0xF0000000) >>> 28];
@@ -192,6 +213,9 @@ GRIF4GfragmentParser = function(){
         //<word>: number; 32 bits corresponding to a type VIII word
         //<unpacked>: object; a key-value store for holding the unpacked results
 
+        // add word to title row
+        document.getElementById('4GwordVIIIvalue').innerHTML = '0x' + word.toString(16);
+
         //slice up word
         unpacked['typeVIIIhead']   = [(word & 0x80000000) >>> 31];
         unpacked['upperIntLength'] = [(word & 0x7C000000) >>> 26];
@@ -207,6 +231,9 @@ GRIF4GfragmentParser = function(){
         //parse a type IX word
         //<word>: number; 32 bits corresponding to a type IX word
         //<unpacked>: object; a key-value store for holding the unpacked results
+
+        // add word to title row
+        document.getElementById('4GwordIXvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIXhead']     = [(word & 0x80000000) >>> 31];
@@ -224,6 +251,9 @@ GRIF4GfragmentParser = function(){
         //<word>: number; 32 bits corresponding to a type X word
         //<unpacked>: object; a key-value store for holding the unpacked results
 
+        // add word to title row
+        document.getElementById('4GwordXvalue').innerHTML = '0x' + word.toString(16);
+
         //slice up word
         unpacked['typeXhead']              = [(word & 0x80000000) >>> 31];
         unpacked['upperLongIntLength']     = [(word & 0x7FE00000) >>> 21];
@@ -236,6 +266,9 @@ GRIF4GfragmentParser = function(){
         //<word>: number; 32 bits corresponding to a type XI word
         //<unpacked>: object; a key-value store for holding the unpacked results
 
+        // add word to title row
+        document.getElementById('4GwordXIvalue').innerHTML = '0x' + word.toString(16);
+
         //slice up word
         unpacked['typeXIhead']         = [(word & 0x80000000) >>> 31];
         unpacked['lowerLongIntLength'] = [(word & 0x7FE00000) >>> 21];
@@ -247,6 +280,9 @@ GRIF4GfragmentParser = function(){
         //parse a type XII word
         //<word>: number; 32 bits corresponding to a type XII word
         //<unpacked>: object; a key-value store for holding the unpacked results
+
+        // add word to title row
+        document.getElementById('4GwordXIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeXpacketType']                        = [(word & 0xF0000000) >>> 28];

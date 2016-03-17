@@ -213,7 +213,8 @@
                                 partials[0],
                                 {
                                     "words" : grif16fragmentWords.slice(0,5),
-                                    'IDsuffix': ''
+                                    'IDsuffix': '',
+                                    'ttplacement': 'left'
                                 }
                             )
 
@@ -221,7 +222,8 @@
                                 partials[0],
                                 {
                                     "words" : grif16fragmentWords.slice(5),
-                                    'IDsuffix': ''
+                                    'IDsuffix': '',
+                                    'ttplacement': 'right'
                                 }
                             )
 
@@ -278,6 +280,10 @@
                                     'IDsuffix': 'PPG'
                                 }
                             )
+
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip()
+                        })
                     }
                 ).then(
                     function(){

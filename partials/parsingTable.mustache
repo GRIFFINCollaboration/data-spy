@@ -10,11 +10,11 @@
         {{ # words}}
 
             <tr class='wordHeader'>
-                <td id='word{{label}}title' colspan='3'>Word {{label}}</td>
+                <td id='{{IDsuffix}}word{{label}}title' colspan='3'>Word {{label}}: <span id='{{IDsuffix}}word{{label}}value'></span></td>
             </tr>
 
             {{ # members}}
-                <tr>
+                <tr data-toggle="tooltip" data-placement="{{ttplacement}}" title='{{tooltip}}'>
                     <td id='{{id}}{{IDsuffix}}'>{{title}}</td>
                     <td id='{{id}}{{IDsuffix}}Hex'></td>
                     <td id='{{id}}{{IDsuffix}}Parsed'></td>

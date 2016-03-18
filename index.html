@@ -239,7 +239,7 @@
             // prep templates for mustache injection
             dataStore.partials['parsingTable'] = document.getElementById('parsingTable').innerHTML;
             dataStore.partials['warningsList'] = document.getElementById('warningsList').innerHTML;
-
+console.log(dataStore.partials['parsingTable'])
             //set up html
             //grif 16 fragments
             document.getElementById('leftG16fragment').innerHTML = Mustache.to_html(

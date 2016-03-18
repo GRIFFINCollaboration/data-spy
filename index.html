@@ -26,39 +26,38 @@
                         <td>Parsed</td>
                     </tr>
 
-                    {{ # words}}
+                    <!--{{ # words}}-->
 
                         <tr class='wordHeader'>
                             <td id='{{IDsuffix}}word{{label}}title' colspan='3'>Word {{label}}: <span id='{{IDsuffix}}word{{label}}value'></span></td>
                         </tr>
 
-                        {{ # members}}
+                        <!--{{ # members}}-->
                             <tr data-toggle="tooltip" data-placement="{{ttplacement}}" title='{{tooltip}}'>
                                 <td id='{{id}}{{IDsuffix}}'>{{title}}</td>
                                 <td id='{{id}}{{IDsuffix}}Hex'></td>
                                 <td id='{{id}}{{IDsuffix}}Parsed'></td>
                             </tr>
-                        {{ / members}}
+                        <!--{{ / members}}-->
 
-                    {{ / words}}
-
+                    <!--{{ / words}}-->
                 </table>
             </div>
         </template>
 
         <template id='warningsList'>
-            {{ # bad }}
+            <!--{{ # bad }}-->
                 <h2><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Data Corruption Warnings</h2>
                 <ul>
-                    {{ # warnings }}
+                    <!--{{ # warnings }}-->
                         <li>{{.}}</li>
-                    {{ / warnings}}
+                    <!--{{ / warnings}}-->
                 </ul>
-            {{ / bad }}
+            <!--{{ / bad }}-->
 
-            {{ # good }}
+            <!--{{ # good }}-->
                 <h2><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> All OK</h2>
-            {{ / good }}
+            <!--{{ / good }}-->
         </template>
     </head>
 
@@ -239,7 +238,7 @@
             // prep templates for mustache injection
             dataStore.partials['parsingTable'] = document.getElementById('parsingTable').innerHTML;
             dataStore.partials['warningsList'] = document.getElementById('warningsList').innerHTML;
-console.log(dataStore.partials['parsingTable'])
+
             //set up html
             //grif 16 fragments
             document.getElementById('leftG16fragment').innerHTML = Mustache.to_html(
@@ -386,7 +385,7 @@ console.log(dataStore.partials['parsingTable'])
 
             }
 
-            //parseODB([testingData.grif16fragment, testingData.scalerData, testingData.grif4Gdata, testingData.PPGdata]);
+            parseODB([testingData.grif16fragment, testingData.scalerData, testingData.grif4Gdata, testingData.PPGdata]);
         </script>
 
     </body>

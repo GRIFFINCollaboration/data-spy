@@ -46,7 +46,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordIvalue'))
+            document.getElementById('wordIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIpacketType']   = [(word & 0xF0000000) >>> 28];
@@ -91,7 +92,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordIIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordIIvalue'))
+            document.getElementById('wordIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIIpacketType']          = [(word & 0xF0000000) >>> 28];
@@ -107,7 +109,8 @@ GRIF16fragmentParser = function(){
         var patternsPassed, i;
 
         // add word to title row
-        document.getElementById('wordIIIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordIIIvalue'))
+            document.getElementById('wordIIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIIIhead']       = [(word & 0xC0000000) >>> 30];
@@ -143,7 +146,8 @@ GRIF16fragmentParser = function(){
         unpacked['filterConditionCounterValue'].push([(word & 0x7FFFFFFF) >>> 0]);
 
         // add word to title row
-        document.getElementById('wordIVvalue').innerHTML = '(' + unpacked['typeIVhead'].length + ' words)'
+        if(document.getElementById('wordIVvalue'))
+            document.getElementById('wordIVvalue').innerHTML = '(' + unpacked['typeIVhead'].length + ' words)'
     }.bind(this);
 
     this.parsers.V = function(word, unpacked){
@@ -152,7 +156,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordVvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordVvalue'))
+            document.getElementById('wordVvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVPacketType']  = [(word & 0xF0000000) >>> 28];
@@ -165,7 +170,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordVIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordVIvalue'))
+            document.getElementById('wordVIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVIPacketType'] = [(word & 0xF0000000) >>> 28];
@@ -179,7 +185,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordVIIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordVIIvalue'))
+            document.getElementById('wordVIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVIIPacketType'] = [(word & 0xF0000000) >>> 28];
@@ -215,7 +222,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordVIIIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordVIIIvalue'))
+            document.getElementById('wordVIIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVIIIhead']   = [(word & 0x80000000) >>> 31];
@@ -234,7 +242,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordIXvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordIXvalue'))
+            document.getElementById('wordIXvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIXhead']     = [(word & 0x80000000) >>> 31];
@@ -253,7 +262,8 @@ GRIF16fragmentParser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('wordXvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('wordXvalue'))
+            document.getElementById('wordXvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeXpacketType']                        = [(word & 0xF0000000) >>> 28];

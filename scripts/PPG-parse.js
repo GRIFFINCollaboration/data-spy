@@ -46,7 +46,8 @@ PPGparser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('PPGwordIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('PPGwordIvalue'))
+            document.getElementById('PPGwordIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIpacketType']   = [(word & 0xF0000000) >>> 28];
@@ -87,7 +88,8 @@ PPGparser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('PPGwordIIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('PPGwordIIvalue'))
+            document.getElementById('PPGwordIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIIpacketType']          = [(word & 0xF0000000) >>> 28];
@@ -101,7 +103,8 @@ PPGparser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('PPGwordIIIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('PPGwordIIIvalue'))
+            document.getElementById('PPGwordIIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIIIpacketType']  = [(word & 0xF0000000) >>> 28];
@@ -115,7 +118,8 @@ PPGparser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('PPGwordIVvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('PPGwordIVvalue'))
+            document.getElementById('PPGwordIVvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeIVpacketType']    = [(word & 0xF0000000) >>> 28];
@@ -129,7 +133,8 @@ PPGparser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('PPGwordVvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('PPGwordVvalue'))
+            document.getElementById('PPGwordVvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVpacketType']  = [(word & 0xF0000000) >>> 28];
@@ -143,7 +148,8 @@ PPGparser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('PPGwordVIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('PPGwordVIvalue'))
+            document.getElementById('PPGwordVIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVIpacketType']  = [(word & 0xF0000000) >>> 28];
@@ -157,7 +163,8 @@ PPGparser = function(){
         //<unpacked>: object; a key-value store for holding the unpacked results
 
         // add word to title row
-        document.getElementById('PPGwordVIIvalue').innerHTML = '0x' + word.toString(16);
+        if(document.getElementById('PPGwordVIIvalue'))
+            document.getElementById('PPGwordVIIvalue').innerHTML = '0x' + word.toString(16);
 
         //slice up word
         unpacked['typeVIIpacketType']  = [(word & 0xF0000000) >>> 28];

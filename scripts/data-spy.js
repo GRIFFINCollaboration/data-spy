@@ -254,27 +254,32 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIpacketType',
-                'title': 'Type I Packet Type'
+                'title': 'Type I Packet Type',
+                'tooltip': 'Type I words begin with 0x8'
             },
 
             {
                 'id': 'moduleType',
-                'title': 'Module Type'
+                'title': 'Module Type',
+                'tooltip': 'Type of DAQ module that produced this word'
             },
 
             {
                 'id': 'wordCount',
-                'title': 'Word Count'
+                'title': 'Word Count',
+                'tooltip': 'Number of words in this event'
             },
 
             {
                 'id': 'address',
-                'title': 'Address'
+                'title': 'Address',
+                'tooltip': 'MSC address'
             },
 
             {
                 'id': 'detType',
-                'title': 'Detector Type'
+                'title': 'Detector Type',
+                'tooltip': 'Which detector produced this event'
             }
         ]
     }
@@ -284,12 +289,14 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIIpacketType',
-                'title': 'Type II Packet Type'
+                'title': 'Type II Packet Type',
+                'tooltip': 'Type II words begin with 0xD'
             },
 
             {
                 'id': 'networkPacketCounterValue',
-                'title': 'Network Packet Counter Value'
+                'title': 'Network Packet Counter Value',
+                'tooltip': 'Count of events dispatched by Master'
             }
         ]
     }
@@ -299,22 +306,26 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIIIhead',
-                'title': 'Type III Packet Label'
+                'title': 'Type III Packet Label',
+                'tooltip': 'Type III words begin with 00 (two bits)'
             },
 
             {
                 'id': 'filterPatterns',
-                'title': 'Filter Patterns'
+                'title': 'Filter Patterns',
+                'tooltip': 'Which filters passed this event'
             },
 
             {
                 'id': 'waveformIndicator',
-                'title': 'Waveform Indicator'
+                'title': 'Waveform Indicator',
+                'tooltip': 'Are waveforms present in this event?'
             },
 
             {
                 'id': 'reserved',
-                'title': 'Reserved Bits'
+                'title': 'Reserved Bits',
+                'tooltip': 'TBD'
             }
         ]
     }
@@ -324,12 +335,14 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIVhead',
-                'title': 'Type IV Packet Label'
+                'title': 'Type IV Packet Label',
+                'tooltip': 'Type IV words begin with 0 (1 bit)'
             },
 
             {
                 'id': 'filterConditionCounterValue',
-                'title': 'Filter Condition Counter Value'
+                'title': 'Filter Condition Counter Value',
+                'tooltip': 'Count of events passing individual filters (one counter for each filter passed)'
             }
         ]
     }
@@ -339,12 +352,14 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeVPacketType',
-                'title': 'Type V Packet Type'
+                'title': 'Type V Packet Type',
+                'tooltip': 'Type V words begin with 0x9'
             },
 
             {
                 'id': 'channelAcceptedHitCounter',
-                'title': 'Channel Accepted Hit Counter'
+                'title': 'Channel Accepted Hit Counter',
+                'tooltip': 'Count of threshold crossings on this channel'
             }
         ]
     }
@@ -354,12 +369,14 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeVIPacketType',
-                'title': 'Type VI Packet Type'
+                'title': 'Type VI Packet Type',
+                'tooltip': 'Type VI words begin with 0xA'
             },
 
             {
                 'id': 'timestampLowBits',
-                'title': 'Timestamp Low Bits'
+                'title': 'Timestamp Low Bits',
+                'tooltip': 'least-significant 28 bits of the event timestamp'
             }
         ]
     }
@@ -369,52 +386,43 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeVIIPacketType',
-                'title': 'Type VII Packet Type'
+                'title': 'Type VII Packet Type',
+                'tooltip': 'Type VII words begin with 0xB'
             },
 
             {
                 'id': 'deadtime',
-                'title': 'Deadtime'
+                'title': 'Deadtime',
+                'tooltip': 'Event deadtime'
             },
 
             {
                 'id': 'timestampHighBits',
-                'title': 'Timestamp High Bits'
+                'title': 'Timestamp High Bits',
+                'tooltip': 'Most significant bits of the timestamp'
             }
         ]
     }
-
-    // words[7] = {
-    //     "label": 'VIIa',
-    //     "members": [
-    //         {
-    //             'id': 'typeVIIaPacketType',
-    //             'title': 'Type VIIa Packet Type'
-    //         },
-
-    //         {
-    //             'id': 'waveformSample',
-    //             'title': 'Waveform Sample'
-    //         }
-    //     ]
-    // }
 
     words[7] = {
         "label": 'VIII',
         "members": [
             {
                 'id': 'typeVIIIhead',
-                'title': 'Type VIII Packet Label'
+                'title': 'Type VIII Packet Label',
+                'tooltip': 'Type VIII words begin with 0 (1 bit)'
             },
 
             {
                 'id': 'upperIntLength',
-                'title': 'Upper Integration Length'
+                'title': 'Upper Integration Length',
+                'tooltip': 'Upper bits of integration length'
             },
 
             {
                 'id': 'pulseHeight',
-                'title': 'Pulse Height'
+                'title': 'Pulse Height',
+                'tooltip': 'Pulse height in ADC channels'
             }
         ]
     }
@@ -424,17 +432,20 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeIXhead',
-                'title': 'Type IX Packet Label'
+                'title': 'Type IX Packet Label',
+                'tooltip': 'Type IX words begin with 0 (1 bit)'
             },
 
             {
                 'id': 'lowerIntLength',
-                'title': 'Lower Integration Length'
+                'title': 'Lower Integration Length',
+                'tooltip': 'Lower bits of integration length'
             },
 
             {
                 'id': 'CFD',
-                'title': 'CFD'
+                'title': 'CFD',
+                'tooltip': 'CFD timing algorithm correction to the timestamp'
             }
         ]
     }
@@ -444,17 +455,20 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeXhead',
-                'title': 'Type X Packet Label'
+                'title': 'Type X Packet Label',
+                'tooltip': 'Type X words begin with 0 (1 bit)'
             },
 
             {
                 'id': 'upperLongIntLength',
-                'title': 'Upper Long Integration Length'
+                'title': 'Upper Long Integration Length',
+                'tooltip': 'Long charge integration upper bits'
             },
 
             {
                 'id': 'shortChargeIntegration',
-                'title': 'Short Charge Integration'
+                'title': 'Short Charge Integration',
+                'tooltip': 'Short charge integration'
             }
         ]
     }
@@ -464,17 +478,20 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeXIhead',
-                'title': 'Type XI Packet Label'
+                'title': 'Type XI Packet Label',
+                'tooltip': 'Type XI words begin with0 (1 bit)'
             },
 
             {
                 'id': 'lowerLongIntLength',
-                'title': 'Lower Long Integration Length'
+                'title': 'Lower Long Integration Length',
+                'tooltip': 'Long charge integration lower bits'
             },
 
             {
                 'id': 'zeroCrossingTime',
-                'title': 'Zero-Crossing Time'
+                'title': 'Zero-Crossing Time',
+                'tooltip': 'CFD-determined crossing time'
             }
         ]
     }
@@ -484,17 +501,20 @@ function defineGRIF4GfragmentTableStructure(){
         "members": [
             {
                 'id': 'typeXIIpacketType',
-                'title': 'Type XII Packet Type'
+                'title': 'Type XII Packet Type',
+                'tooltip': 'Type XII words begin with 0xE'
             },
 
             {
                 'id': 'channelAcceptedCounterValue',
-                'title': 'Channel Accepted Counter Value'
+                'title': 'Channel Accepted Counter Value',
+                'tooltip': 'Triggers accepted on channel since start of run'
             },
 
             {
                 'id': 'eventTrailerChannelAcceptedHitCounter',
-                'title': 'Repeat Channel Accepted Hit Counter Low Bits'
+                'title': 'Repeat Channel Accepted Hit Counter Low Bits',
+                'tooltip': 'Count of threshold crossings on this channel'
             }
         ]
     }
@@ -514,27 +534,32 @@ function definePPGtableStructure(){
         "members": [
             {
                 'id': 'typeIpacketType',
-                'title': 'Type I Packet Type'
+                'title': 'Type I Packet Type',
+                'tooltip': 'Type I words begin with 0x8'
             },
 
             {
                 'id': 'moduleType',
-                'title': 'Module Type'
+                'title': 'Module Type',
+                'tooltip': 'Type of DAQ module that produced this word'
             },
 
             {
                 'id': 'wordCount',
-                'title': 'Word Count'
+                'title': 'Word Count',
+                'tooltip': 'Number of words in this event'
             },
 
             {
                 'id': 'address',
-                'title': 'Address'
+                'title': 'Address',
+                'tooltip': 'MSC address'
             },
 
             {
                 'id': 'detType',
-                'title': 'Detector Type'
+                'title': 'Detector Type',
+                'tooltip': 'Which detector produced this event'
             }
         ]
     }
@@ -544,12 +569,14 @@ function definePPGtableStructure(){
         "members": [
             {
                 'id': 'typeIIpacketType',
-                'title': 'Type II Packet Type'
+                'title': 'Type II Packet Type',
+                'tooltip': 'Type II words begin with 0xD'
             },
 
             {
                 'id': 'networkPacketCounterValue',
-                'title': 'Network Packet Counter Value'
+                'title': 'Network Packet Counter Value',
+                'tooltip': 'Count of events dispatched by Master'
             }
         ]
     }
@@ -559,12 +586,14 @@ function definePPGtableStructure(){
         "members": [
             {
                 'id': 'typeIIIpacketType',
-                'title': 'Type III Packet Type'
+                'title': 'Type III Packet Type',
+                'tooltip': 'Type III words begin with 0x0'
             },
 
             {
                 'id': 'expectedPPGpattern',
-                'title': 'Expected PPG Pattern'
+                'title': 'Expected PPG Pattern',
+                'tooltip': 'Expected PPG pattern'
             }
 
         ]
@@ -575,12 +604,14 @@ function definePPGtableStructure(){
         "members": [
             {
                 'id': 'typeIVpacketType',
-                'title': 'Type IV Packet Type'
+                'title': 'Type IV Packet Type',
+                'tooltip': 'Type IV words begin with 0x9'
             },
 
             {
                 'id': 'confirmedPPGpattern',
-                'title': 'Confirmed PPG Pattern'
+                'title': 'Confirmed PPG Pattern',
+                'tooltip': 'Reported PPG pattern'
             }
         ]
     }
@@ -590,12 +621,14 @@ function definePPGtableStructure(){
         "members": [
             {
                 'id': 'typeVpacketType',
-                'title': 'Type V Packet Type'
+                'title': 'Type V Packet Type',
+                'tooltip': 'Type V words begin with 0xA'
             },
 
             {
                 'id': 'timestampLowBits',
-                'title': 'Timestamp Low Bits'
+                'title': 'Timestamp Low Bits',
+                'tooltip': 'least-significant 28 bits of the event timestamp'
             }
         ]
     }
@@ -605,12 +638,14 @@ function definePPGtableStructure(){
         "members": [
             {
                 'id': 'typeVIpacketType',
-                'title': 'Type VI Packet Type'
+                'title': 'Type VI Packet Type',
+                'tooltip': 'Type VI words begin with 0xB'
             },
 
             {
                 'id': 'timestampHighBits',
-                'title': 'Timestamp High Bits'
+                'title': 'Timestamp High Bits',
+                'tooltip': 'Most significant bits of the timestamp'
             }
         ]
     }
@@ -620,12 +655,14 @@ function definePPGtableStructure(){
         "members": [
             {
                 'id': 'typeVIIpacketType',
-                'title': 'Type VII Packet Type'
+                'title': 'Type VII Packet Type',
+                'tooltip': 'Type VII words begin with 0xE'
             },
 
             {
                 'id': 'previousPPGpattern',
-                'title': 'Previous PPG Pattern'
+                'title': 'Previous PPG Pattern',
+                'tooltip': 'Expected PPG pattern from the previous event'
             }
         ]
     }
@@ -645,27 +682,32 @@ function defineScalerTableStructure(){
         "members": [
             {
                 'id': 'typeIpacketType',
-                'title': 'Type I Packet Type'
+                'title': 'Type I Packet Type',
+                'tooltip': 'Type I words begin with 0x8'
             },
 
             {
                 'id': 'moduleType',
-                'title': 'Module Type'
+                'title': 'Module Type',
+                'tooltip': 'Type of DAQ module that produced this word'
             },
 
             {
                 'id': 'wordCount',
-                'title': 'Word Count'
+                'title': 'Word Count',
+                'tooltip': 'Number of words in this event'
             },
 
             {
                 'id': 'address',
-                'title': 'Address'
+                'title': 'Address',
+                'tooltip': 'MSC address'
             },
 
             {
                 'id': 'detType',
-                'title': 'Detector Type'
+                'title': 'Detector Type',
+                'tooltip': 'Which detector produced this event'
             }
         ]
     }
@@ -675,12 +717,14 @@ function defineScalerTableStructure(){
         "members": [
             {
                 'id': 'typeIIpacketType',
-                'title': 'Type II Packet Type'
+                'title': 'Type II Packet Type',
+                'tooltip': 'Type II words begin with 0xD'
             },
 
             {
                 'id': 'networkPacketCounterValue',
-                'title': 'Network Packet Counter Value'
+                'title': 'Network Packet Counter Value',
+                'tooltip': 'Count of events dispatched by Master'
             }
         ]
     }
@@ -690,12 +734,14 @@ function defineScalerTableStructure(){
         "members": [
             {
                 'id': 'typeIIIpacketType',
-                'title': 'Type III Packet Type'
+                'title': 'Type III Packet Type',
+                'tooltip': 'Type III words begin with 0xA'
             },
 
             {
                 'id': 'timestampLowBits',
-                'title': 'Time Stamp Low Bits'
+                'title': 'Time Stamp Low Bits',
+                'tooltip': 'least-significant 28 bits of the event timestamp'
             }
 
         ]
@@ -706,7 +752,8 @@ function defineScalerTableStructure(){
         "members": [
             {
                 'id': 'scalerValue',
-                'title': 'Scaler Values'
+                'title': 'Scaler Values',
+                'tooltip': 'Scaler value'
             }
         ]
     }
@@ -716,22 +763,26 @@ function defineScalerTableStructure(){
         "members": [
             {
                 'id': 'typeVpacketType',
-                'title': 'Type V Packet Type'
+                'title': 'Type V Packet Type',
+                'tooltip': 'Type V words begin with 0xE'
             },
 
             {
                 'id': 'scalerType',
-                'title': 'Scaler Type'
+                'title': 'Scaler Type',
+                'tooltip': '0 == deadtime, 1 == rate scaler'
             },
 
             {
                 'id': 'timestampHighBits',
-                'title': 'Timestamp High Bits'
+                'title': 'Timestamp High Bits',
+                'tooltip': 'Most significant bits of the timestamp' 
             },
 
             {
                 'id': 'repeatedTimeStampLowBits',
-                'title': 'Repeated Timestamp Low Bits'
+                'title': 'Repeated Timestamp Low Bits',
+                'tooltip': 'least-significant 8 bits of the event timestamp'
             }
         ]
     }
@@ -948,7 +999,8 @@ function parsePPG(payload){
     flags = dataStore.PPGcompositionalFlags;
     keys = Object.keys(dataStore.PPGwordFlags)
     for(i=0; i<keys.length; i++){
-        flags = flags.concat(dataStore.PPGwordFlags[keys[i]]);
+        if(dataStore.PPGwordFlags[keys[i]] != '') 
+            flags = flags.concat(dataStore.PPGwordFlags[keys[i]]);
         document.getElementById(keys[i]+'4G').parentNode.setAttribute('style', 'background-color: #FF0000');
     }
 
@@ -1016,7 +1068,8 @@ function parseScaler(payload){
     flags = dataStore.scalerCompositionalFlags;
     keys = Object.keys(dataStore.scalerWordFlags)
     for(i=0; i<keys.length; i++){
-        flags = flags.concat(dataStore.scalerWordFlags[keys[i]]);
+        if(dataStore.scalerWordFlags[keys[i]] != '') 
+            flags = flags.concat(dataStore.scalerWordFlags[keys[i]]);
         document.getElementById(keys[i]+'Scaler').parentNode.setAttribute('style', 'background-color: #FF0000');
     }
 

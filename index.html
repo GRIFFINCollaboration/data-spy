@@ -15,10 +15,54 @@
         <script src='scripts/PPG-parse.js' type="text/javascript"></script>
         <script src='scripts/scaler-parse.js' type="text/javascript"></script>
         <link rel="stylesheet" href="css/data-spy.css">
+
+        <template id='parsingTable'>
+            <div class="table-responsive">
+                <table class="table unpackingTable">
+
+                    <tr>
+                        <td></td>
+                        <td>Hex</td>
+                        <td>Parsed</td>
+                    </tr>
+
+                    {{ # words}}
+
+                        <tr class='wordHeader'>
+                            <td id='{{IDsuffix}}word{{label}}title' colspan='3'>Word {{label}}: <span id='{{IDsuffix}}word{{label}}value'></span></td>
+                        </tr>
+
+                        {{ # members}}
+                            <tr data-toggle="tooltip" data-placement="{{ttplacement}}" title='{{tooltip}}'>
+                                <td id='{{id}}{{IDsuffix}}'>{{title}}</td>
+                                <td id='{{id}}{{IDsuffix}}Hex'></td>
+                                <td id='{{id}}{{IDsuffix}}Parsed'></td>
+                            </tr>
+                        {{ / members}}
+
+                    {{ / words}}
+
+                </table>
+            </div>
+        </template>
+
+        <template id='warningsList'>
+            {{ # bad }}
+                <h2><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Data Corruption Warnings</h2>
+                <ul>
+                    {{ # warnings }}
+                        <li>{{.}}</li>
+                    {{ / warnings}}
+                </ul>
+            {{ / bad }}
+
+            {{ # good }}
+                <h2><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> All OK</h2>
+            {{ / good }}
+        </template>
     </head>
 
     <body>
-
         <div class='branding header'>
             <div class='col-md-1'>
                 <img src='img/logo.gif'></img>
@@ -182,192 +226,167 @@
                 grif4GfragmentWords = defineGRIF4GfragmentTableStructure(),
                 PPGwords = definePPGtableStructure(),
                 scalerWords = defineScalerTableStructure(),
-                ODBrequest = 'http://grsmid00.triumf.ca:8081/?cmd=jcopy&odb0=/Runinfo/Run number&encoding=json-p-nokeys&callback=parseODB',
-                templates = [
-                    'parsingTable',
-                    'warningsList'
-                ]
+                ODBrequest = '???&callback=parseODB';
             dataStore = {
                 'currentViewID': 'G16fragment',
                 'GRIF16fragmentWordFlags' : {},
                 'GRIF4GfragmentWordFlags' : {},
                 'scalerWordFlags' : {},
-                'PPGwordFlags' : {}
+                'PPGwordFlags' : {},
+                'partials': {}
             };
 
-            //fetch the templates, then set up html, then fetch data from the ODB, then parse it and sort it into the table
-            Promise.all(templates.map(promisePartial)
-                ).then(
-                    function(partials){
-                        var i;
+            // prep templates for mustache injection
+            dataStore.partials['parsingTable'] = document.getElementById('parsingTable').innerHTML;
+            dataStore.partials['warningsList'] = document.getElementById('warningsList').innerHTML;
 
-                        //save partials for later
-                        dataStore.partials = {};
-                        for(i=0; i<templates.length; i++){
-                            dataStore.partials[templates[i]] = partials[i];
-                        }
-
-                        //set up html
-                        //grif 16 fragments
-                        document.getElementById('leftG16fragment').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : grif16fragmentWords.slice(0,5),
-                                    'IDsuffix': '',
-                                    'ttplacement': 'left'
-                                }
-                            )
-
-                        document.getElementById('rightG16fragment').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : grif16fragmentWords.slice(5),
-                                    'IDsuffix': '',
-                                    'ttplacement': 'right'
-                                }
-                            )
-
-                        //grif 16 scalar
-
-                        document.getElementById('leftScaler').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : scalerWords.slice(0,3),
-                                    'IDsuffix': 'Scaler',
-                                    'ttplacement': 'left'
-                                }
-                            )
-
-                        document.getElementById('rightScaler').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : scalerWords.slice(3),
-                                    'IDsuffix': 'Scaler',
-                                    'ttplacement': 'right'
-                                }
-                            )
-
-                        //grif 4g fragments
-
-                        document.getElementById('leftG4Gfragment').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : grif4GfragmentWords.slice(0,6),
-                                    'IDsuffix': '4G',
-                                    'ttplacement': 'left'
-                                }
-                            )
-
-                        document.getElementById('rightG4Gfragment').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : grif4GfragmentWords.slice(6),
-                                    'IDsuffix': '4G',
-                                    'ttplacement': 'right'
-                                }
-                            )
-
-                        //ppg
-
-                        document.getElementById('leftPPG').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : PPGwords.slice(0,2),
-                                    'IDsuffix': 'PPG',
-                                    'ttplacement': 'left'
-                                }
-                            )
-
-                        document.getElementById('rightPPG').innerHTML = Mustache.to_html(
-                                partials[0],
-                                {
-                                    "words" : PPGwords.slice(2),
-                                    'IDsuffix': 'PPG',
-                                    'ttplacement': 'right'
-                                }
-                            )
-
-                        $(function () {
-                            $('[data-toggle="tooltip"]').tooltip()
-                        })
+            //set up html
+            //grif 16 fragments
+            document.getElementById('leftG16fragment').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : grif16fragmentWords.slice(0,5),
+                        'IDsuffix': '',
+                        'ttplacement': 'left'
                     }
-                ).then(
-                    function(){
-                        //fetch most recent events
-                        //promiseScript(ODBrequest)
-
-                        //testing implementation until events are available in odb
-                        var testingData = {
-                            'grif16fragment': [
-                                0x8EA67C80,
-                                0xD0850F81,
-                                0x1a047C84,
-                                0x000461FF,
-                                0x000461FE,
-                                0x000461FD,
-                                0x9074A998,
-                                0xA074A998,
-                                0xB00461FF,
-
-                                0xC0000001,
-                                0xC0000002,
-                                0xC0000003,
-                                0xC0000004,
-
-                                0x057715CC,
-                                0x0074A998,
-                                0xE874A998
-                            ],
-
-                            'grif4Gdata': [
-                                0x88A67C80,
-                                0xD0850F81,
-                                0x1a04FC84,
-                                0x73F461FF,
-                                0x9D74A998,
-                                0xA574A998,
-                                0xBC2461FF,
-
-                                0xC00000DE,
-                                0xC00000AD,
-                                0xC00000BE,
-                                0xC00000EF,
-
-                                0x057715CC,
-                                0x7F74A998,
-                                0x057715CC,
-                                0x7F74A998,
-                                0xE874A998
-                            ],
-
-                            'PPGdata': [
-                                0x88767C80,
-                                0xD0850F81,
-                                0x0A04FC84,
-                                0x93F461FF,
-                                0xAD74A998,
-                                0xB574A998,
-                                0xE874A998
-                            ],
-
-                            'scalerData': [
-                                0x88A67C8F,
-                                0xD0850F81,
-                                0xAA04FC84,
-                                0x93F461FF,
-                                0x11111111,
-                                0xE074A998
-                            ]
-
-                        }
-
-                        parseODB([testingData.grif16fragment, testingData.scalerData, testingData.grif4Gdata, testingData.PPGdata]);
+                )
+            document.getElementById('rightG16fragment').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : grif16fragmentWords.slice(5),
+                        'IDsuffix': '',
+                        'ttplacement': 'right'
                     }
                 )
 
+            //grif 16 scalar
+            document.getElementById('leftScaler').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : scalerWords.slice(0,3),
+                        'IDsuffix': 'Scaler',
+                        'ttplacement': 'left'
+                    }
+                )
+            document.getElementById('rightScaler').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : scalerWords.slice(3),
+                        'IDsuffix': 'Scaler',
+                        'ttplacement': 'right'
+                    }
+                )
 
+            //grif 4g fragments
+            document.getElementById('leftG4Gfragment').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : grif4GfragmentWords.slice(0,6),
+                        'IDsuffix': '4G',
+                        'ttplacement': 'left'
+                    }
+                )
+            document.getElementById('rightG4Gfragment').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : grif4GfragmentWords.slice(6),
+                        'IDsuffix': '4G',
+                        'ttplacement': 'right'
+                    }
+                )
 
+            //ppg
+            document.getElementById('leftPPG').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : PPGwords.slice(0,2),
+                        'IDsuffix': 'PPG',
+                        'ttplacement': 'left'
+                    }
+                )
+            document.getElementById('rightPPG').innerHTML = Mustache.to_html(
+                    dataStore.partials['parsingTable'],
+                    {
+                        "words" : PPGwords.slice(2),
+                        'IDsuffix': 'PPG',
+                        'ttplacement': 'right'
+                    }
+                )
 
+            //tooltips
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+
+            //fetch most recent events
+            //promiseScript(ODBrequest)
+
+            //testing implementation until events are available in odb
+            var testingData = {
+                'grif16fragment': [
+                    0x8EA67C80,
+                    0xD0850F81,
+                    0x1a047C84,
+                    0x000461FF,
+                    0x000461FE,
+                    0x000461FD,
+                    0x9074A998,
+                    0xA074A998,
+                    0xB00461FF,
+
+                    0xC0000001,
+                    0xC0000002,
+                    0xC0000003,
+                    0xC0000004,
+
+                    0x057715CC,
+                    0x0074A998,
+                    0xE874A998
+                ],
+
+                'grif4Gdata': [
+                    0x88A67C80,
+                    0xD0850F81,
+                    0x1a04FC84,
+                    0x73F461FF,
+                    0x9D74A998,
+                    0xA574A998,
+                    0xBC2461FF,
+
+                    0xC00000DE,
+                    0xC00000AD,
+                    0xC00000BE,
+                    0xC00000EF,
+
+                    0x057715CC,
+                    0x7F74A998,
+                    0x057715CC,
+                    0x7F74A998,
+                    0xE874A998
+                ],
+
+                'PPGdata': [
+                    0x88767C80,
+                    0xD0850F81,
+                    0x0A04FC84,
+                    0x93F461FF,
+                    0xAD74A998,
+                    0xB574A998,
+                    0xE874A998
+                ],
+
+                'scalerData': [
+                    0x88A67C8F,
+                    0xD0850F81,
+                    0xAA04FC84,
+                    0x93F461FF,
+                    0x11111111,
+                    0xE074A998
+                ]
+
+            }
+
+            //parseODB([testingData.grif16fragment, testingData.scalerData, testingData.grif4Gdata, testingData.PPGdata]);
         </script>
 
     </body>
